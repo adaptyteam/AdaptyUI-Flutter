@@ -1,8 +1,3 @@
+library adapty_ui_flutter;
 
-import 'adapty_ui_flutter_platform_interface.dart';
-
-class AdaptyUiFlutter {
-  Future<String?> getPlatformVersion() {
-    return AdaptyUiFlutterPlatform.instance.getPlatformVersion();
-  }
-}
+export 'src/adapty_ui.dart' show AdaptyUI;
