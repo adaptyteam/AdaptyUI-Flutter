@@ -6,7 +6,7 @@ PODS:
   - adapty_ui_flutter (1.0.0):
     - AdaptyUI
     - Flutter
-  - AdaptyUI (1.0.1):
+  - AdaptyUI (1.1.0):
     - Adapty (~> 2.3)
   - Flutter (1.0.0)
   - shared_preferences_foundation (0.0.1):
@@ -16,32 +16,40 @@ PODS:
 DEPENDENCIES:
   - adapty_flutter (from `.symlinks/plugins/adapty_flutter/ios`)
   - adapty_ui_flutter (from `.symlinks/plugins/adapty_ui_flutter/ios`)
+  - "AdaptyUI (from `git@github.com:adaptyteam/AdaptyUI-iOS.git`, branch `dev`)"
   - Flutter (from `Flutter`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
 
 SPEC REPOS:
   trunk:
     - Adapty
-    - AdaptyUI
 
 EXTERNAL SOURCES:
   adapty_flutter:
     :path: ".symlinks/plugins/adapty_flutter/ios"
   adapty_ui_flutter:
     :path: ".symlinks/plugins/adapty_ui_flutter/ios"
+  AdaptyUI:
+    :branch: dev
+    :git: "git@github.com:adaptyteam/AdaptyUI-iOS.git"
   Flutter:
     :path: Flutter
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/ios"
 
+CHECKOUT OPTIONS:
+  AdaptyUI:
+    :commit: 28c5a7fc55491c273669323591cc44aee19920c4
+    :git: "git@github.com:adaptyteam/AdaptyUI-iOS.git"
+
 SPEC CHECKSUMS:
   Adapty: 7d3ef97291d631d1711bb176c61dd5f26d143bd1
   adapty_flutter: 1a4b354ddc54c1f0d94e4b4fe28b7d7380fff3bf
   adapty_ui_flutter: 23653ffec7acb6891f1b6952c3564b8bf90029a3
-  AdaptyUI: d3ad0c5e1c46effd5e7a1f402e346ed85b6e4173
+  AdaptyUI: abc3ac4cd7b893605f219a058c0c326785a4786e
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
 
-PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+PODFILE CHECKSUM: 1a4eff6d2edba8b223c4c4403ec5da6d8e48da5c
 
 COCOAPODS: 1.11.3

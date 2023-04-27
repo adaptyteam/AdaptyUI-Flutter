@@ -1,6 +1,7 @@
 import 'package:adapty_ui_flutter_example/purchases_observer.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:async';
+
+import 'paywalls_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,9 +33,7 @@ class _MyAppState extends State<MyApp> {
         navigationBar: CupertinoNavigationBar(
           middle: Text('Welcome to Adapty UI Flutter!'),
         ),
-        child: Center(
-          child: Text("123"),
-        ),
+        child: PaywallsList(),
       ),
     );
   }

@@ -31,6 +31,8 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
+  pod 'AdaptyUI', :git => 'git@github.com:adaptyteam/AdaptyUI-iOS.git', :branch => 'dev'
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
