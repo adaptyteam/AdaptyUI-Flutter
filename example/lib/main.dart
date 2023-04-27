@@ -1,5 +1,4 @@
-import 'package:adapty_flutter/adapty_flutter.dart';
-import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
+import 'package:adapty_ui_flutter_example/purchases_observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
@@ -17,13 +16,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    super.initState();
-    initPlatformState();
-  }
+    PurchasesObserver().initialize();
 
-  Future<void> initPlatformState() async {
-    final adapty = Adapty();
-    final adaptyUI = AdaptyUI();
+    super.initState();
   }
 
   @override
