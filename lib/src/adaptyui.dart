@@ -9,9 +9,12 @@ import 'adaptyui_logger.dart';
 import 'constants/argument.dart';
 import 'constants/method.dart';
 
-import 'models/private/adaptyui_error_json_builder.dart';
+import 'package:adapty_flutter/src/models/adapty_ios_products_fetch_policy.dart';
 import 'package:adapty_flutter/src/models/adapty_paywall.dart';
 import 'package:adapty_flutter/src/models/adapty_paywall_product.dart';
+import 'package:adapty_flutter/src/models/adapty_profile.dart';
+import 'package:adapty_flutter/src/models/adapty_error.dart';
+import 'package:adapty_flutter/src/models/adapty_sdk_native.dart';
 
 class AdaptyUI {
   static final AdaptyUI _instance = AdaptyUI._internal();
@@ -44,7 +47,8 @@ class AdaptyUI {
       if (products != null) Argument.products: products.map((e) => e.jsonValue).toList(),
     })) as String;
 
-    return json.decode(result);
+    final view = AdaptyUIViewJSONBuilder.fromJsonValue(json.decode(result));
+    return view;
   }
 
   Future<void> presentPaywallView(AdaptyUIView view) async {
@@ -77,7 +81,7 @@ class AdaptyUI {
     } on PlatformException catch (e) {
       if (e.details != null) {
         final adaptyErrorData = json.decode(e.details);
-        final adaptyError = AdaptyUIErrorJSONBuilder.fromJsonValue(adaptyErrorData);
+        final adaptyError = AdaptyErrorJSONBuilder.fromJsonValue(adaptyErrorData);
         AdaptyUILogger.write(AdaptyLogLevel.verbose, '<-- AdaptyUI.$method() Adapty Error $adaptyError');
         throw adaptyError;
       } else {
@@ -89,6 +93,73 @@ class AdaptyUI {
 
   Future<dynamic> _handleIncomingMethodCall(MethodCall call) {
     AdaptyUILogger.write(AdaptyLogLevel.verbose, 'handleIncomingCall ${call.method}');
+
+    if (_observer == null) return Future.value(null);
+
+    final view = AdaptyUIViewJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.view]));
+
+    switch (call.method) {
+      case Method.paywallViewDidPressCloseButton:
+        _observer!.paywallViewDidPressCloseButton(view);
+        break;
+      case Method.paywallViewDidSelectProduct:
+        final product = AdaptyPaywallProductJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.product]));
+        _observer!.paywallViewDidSelectProduct(view, product);
+        break;
+      case Method.paywallViewDidStartPurchase:
+        final product = AdaptyPaywallProductJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.product]));
+        _observer!.paywallViewDidStartPurchase(view, product);
+        break;
+      case Method.paywallViewDidCancelPurchase:
+        final product = AdaptyPaywallProductJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.product]));
+        _observer!.paywallViewDidCancelPurchase(view, product);
+        break;
+      case Method.paywallViewDidFinishPurchase:
+        final product = AdaptyPaywallProductJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.product]));
+        final profile = AdaptyProfileJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.profile]));
+        _observer!.paywallViewDidFinishPurchase(view, product, profile);
+        break;
+      case Method.paywallViewDidFailPurchase:
+        final product = AdaptyPaywallProductJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.product]));
+        final error = AdaptyErrorJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.error]));
+        _observer!.paywallViewDidFailPurchase(view, product, error);
+        break;
+      case Method.paywallViewDidFinishRestore:
+        final profile = AdaptyProfileJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.profile]));
+        _observer!.paywallViewDidFinishRestore(view, profile);
+        break;
+      case Method.paywallViewDidFailRestore:
+        final error = AdaptyErrorJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.error]));
+        _observer!.paywallViewDidFailRestore(view, error);
+        break;
+      case Method.paywallViewDidFailRendering:
+        final error = AdaptyErrorJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.error]));
+        _observer!.paywallViewDidFailRendering(view, error);
+        break;
+      case Method.paywallViewDidFailLoadingProducts:
+        AdaptyIOSProductsFetchPolicy? fetchPolicy;
+
+        if (AdaptySDKNative.isIOS) {
+          final String fetchPolicyString = call.arguments[Argument.fetchPolicy];
+
+          switch (fetchPolicyString) {
+            case 'wait_for_receipt_validation': // TODO: use Adapty-SDK
+              fetchPolicy = AdaptyIOSProductsFetchPolicy.waitForReceiptValidation;
+              break;
+            default:
+              fetchPolicy = AdaptyIOSProductsFetchPolicy.defaultPolicy;
+              break;
+          }
+        } else {
+          fetchPolicy = null;
+        }
+
+        final error = AdaptyErrorJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.error]));
+        _observer!.paywallViewDidFailLoadingProducts(view, fetchPolicy, error);
+        break;
+      default:
+        break;
+    }
 
     return Future.value(null);
   }

@@ -83,10 +83,11 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
                                                     delegate: Self.pluginInstance)
 
                 self?.cachePaywallController(vc, id: vc.id)
-                flutterCall.callResult(resultModel: [
-                    ArgumentName.view.rawValue: vc.adaptyUIViewModel,
-                ],
-                result: flutterResult)
+
+                flutterCall.callResult(
+                    resultModel: vc.adaptyUIViewModel,
+                    result: flutterResult
+                )
             case let .failure(error):
                 flutterCall.callAdaptyError(flutterResult, error: error)
             }
@@ -124,10 +125,17 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
 
 extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
     public func paywallControllerDidPressCloseButton(_ controller: AdaptyPaywallController) {
-        Self.channel?.invokeMethod(MethodName.paywallViewDidPressCloseButton.rawValue,
-                                   arguments: [
-                                       ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                                   ])
+        do {
+            Self.channel?.invokeMethod(
+                MethodName.paywallViewDidPressCloseButton.rawValue,
+                arguments: [
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                ]
+            )
+        } catch {
+            Adapty.writeLog(level: .error,
+                            message: "Plugin encoding error: \(error.localizedDescription)")
+        }
     }
 
     public func paywallController(_ controller: AdaptyPaywallController,
@@ -136,8 +144,8 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
             Self.channel?.invokeMethod(
                 MethodName.paywallViewDidSelectProduct.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.product.rawValue: try encodeModelToString(model: product),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.product.rawValue: try encodeModelToString(product),
                 ]
             )
         } catch {
@@ -152,8 +160,8 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
             Self.channel?.invokeMethod(
                 MethodName.paywallViewDidStartPurchase.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.product.rawValue: try encodeModelToString(model: product),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.product.rawValue: try encodeModelToString(product),
                 ]
             )
         } catch {
@@ -168,8 +176,8 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
             Self.channel?.invokeMethod(
                 MethodName.paywallViewDidCancelPurchase.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.product.rawValue: try encodeModelToString(model: product),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.product.rawValue: try encodeModelToString(product),
                 ]
             )
         } catch {
@@ -185,9 +193,9 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
             Self.channel?.invokeMethod(
                 MethodName.paywallViewDidFinishPurchase.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.product.rawValue: try encodeModelToString(model: product),
-                    ArgumentName.profile.rawValue: try encodeModelToString(model: profile),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.product.rawValue: try encodeModelToString(product),
+                    ArgumentName.profile.rawValue: try encodeModelToString(profile),
                 ]
             )
         } catch {
@@ -203,9 +211,9 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
             Self.channel?.invokeMethod(
                 MethodName.paywallViewDidFailPurchase.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.product.rawValue: try encodeModelToString(model: product),
-                    ArgumentName.error.rawValue: try encodeModelToString(model: error),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.product.rawValue: try encodeModelToString(product),
+                    ArgumentName.error.rawValue: try encodeModelToString(error),
                 ]
             )
         } catch {
@@ -220,8 +228,8 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
             Self.channel?.invokeMethod(
                 MethodName.paywallViewDidFinishRestore.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.profile.rawValue: try encodeModelToString(model: profile),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.profile.rawValue: try encodeModelToString(profile),
                 ]
             )
         } catch {
@@ -236,8 +244,8 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
             Self.channel?.invokeMethod(
                 MethodName.paywallViewDidFailRestore.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.error.rawValue: try encodeModelToString(model: error),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.error.rawValue: try encodeModelToString(error),
                 ]
             )
         } catch {
@@ -252,8 +260,8 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
             Self.channel?.invokeMethod(
                 MethodName.paywallViewDidFailRendering.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.error.rawValue: try encodeModelToString(model: error),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.error.rawValue: try encodeModelToString(error),
                 ]
             )
         } catch {
@@ -267,19 +275,19 @@ extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
                                   error: AdaptyError) -> Bool {
         do {
             Self.channel?.invokeMethod(
-                MethodName.paywallViewDidFailRendering.rawValue,
+                MethodName.paywallViewDidFailLoadingProducts.rawValue,
                 arguments: [
-                    ArgumentName.view.rawValue: controller.adaptyUIViewModel,
-                    ArgumentName.fetchPolicy.rawValue: policy.description,
-                    ArgumentName.error.rawValue: try encodeModelToString(model: error),
+                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
+                    ArgumentName.fetchPolicy.rawValue: policy.JSONValue,
+                    ArgumentName.error.rawValue: try encodeModelToString(error),
                 ]
             )
         } catch {
             Adapty.writeLog(level: .error,
                             message: "Plugin encoding error: \(error.localizedDescription)")
         }
-        
-        return true
+
+        return policy == .default
     }
 }
 
@@ -287,8 +295,19 @@ enum SwiftAdaptyUiFlutterPluginError: Error {
     case encodeModelError
 }
 
+extension AdaptyProductsFetchPolicy {
+    var JSONValue: String {
+        switch self {
+        case .default:
+            return "default"
+        case .waitForReceiptValidation:
+            return "wait_for_receipt_validation"
+        }
+    }
+}
+
 extension SwiftAdaptyUiFlutterPlugin {
-    func encodeModelToString<T: Encodable>(model: T) throws -> String {
+    func encodeModelToString<T: Encodable>(_ model: T) throws -> String {
         let resultData = try SwiftAdaptyUiFlutterPlugin.jsonEncoder.encode(model)
         if let result = String(data: resultData, encoding: .utf8) {
             return result

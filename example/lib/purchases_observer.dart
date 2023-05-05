@@ -2,7 +2,7 @@ import 'dart:async' show Future;
 import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
 
-class PurchasesObserver {
+class PurchasesObserver with AdaptyUIObserver {
   void Function(AdaptyError)? onAdaptyErrorOccurred;
   void Function(Object)? onUnknownErrorOccurred;
 
@@ -21,6 +21,8 @@ class PurchasesObserver {
     try {
       adapty.setLogLevel(AdaptyLogLevel.verbose);
       adapty.activate();
+
+      AdaptyUI().addObserver(this);
     } catch (e) {
       print('#Example# activate error $e');
     }
@@ -63,5 +65,65 @@ class PurchasesObserver {
     }
 
     return null;
+  }
+
+  @override
+  void paywallViewDidPressCloseButton(AdaptyUIView view) {
+    print('#Example# paywallViewDidPressCloseButton of $view');
+
+    view.dismiss();
+  }
+
+  @override
+  void paywallViewDidCancelPurchase(AdaptyUIView view, AdaptyPaywallProduct product) {
+    print('#Example# paywallViewDidCancelPurchase of $view');
+  }
+
+  @override
+  void paywallViewDidFailLoadingProducts(AdaptyUIView view, AdaptyIOSProductsFetchPolicy? fetchPolicy, AdaptyError error) {
+    print('#Example# paywallViewDidFailLoadingProducts of $view, error = $error');
+  }
+
+  @override
+  void paywallViewDidFailRendering(AdaptyUIView view, AdaptyError error) {
+    print('#Example# paywallViewDidFailRendering of $view, error = $error');
+  }
+
+  @override
+  void paywallViewDidFinishPurchase(AdaptyUIView view, AdaptyPaywallProduct product, AdaptyProfile profile) {
+    print('#Example# paywallViewDidFinishPurchase of $view');
+
+    if (profile.accessLevels["premium"]?.isActive ?? false) {
+      view.dismiss();
+    }
+  }
+
+  @override
+  void paywallViewDidFailPurchase(AdaptyUIView view, AdaptyPaywallProduct product, AdaptyError error) {
+    print('#Example# paywallViewDidFailPurchase of $view, error = $error');
+  }
+
+  @override
+  void paywallViewDidFinishRestore(AdaptyUIView view, AdaptyProfile profile) {
+    print('#Example# paywallViewDidFinishRestore of $view');
+
+    if (profile.accessLevels["premium"]?.isActive ?? false) {
+      view.dismiss();
+    }
+  }
+
+  @override
+  void paywallViewDidFailRestore(AdaptyUIView view, AdaptyError error) {
+    print('#Example# paywallViewDidFailRestore of $view, error = $error');
+  }
+
+  @override
+  void paywallViewDidSelectProduct(AdaptyUIView view, AdaptyPaywallProduct product) {
+    print('#Example# paywallViewDidSelectProduct of $view');
+  }
+
+  @override
+  void paywallViewDidStartPurchase(AdaptyUIView view, AdaptyPaywallProduct product) {
+    print('#Example# paywallViewDidStartPurchase of $view');
   }
 }

@@ -1,6 +1,7 @@
-import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
-import 'package:adapty_ui_flutter/src/models/private/json_builder.dart';
+import 'package:adapty_flutter/src/models/private/json_builder.dart';
 import 'package:meta/meta.dart' show immutable;
+
+import '../adaptyui.dart';
 
 part 'private/adaptyui_view_json_builder.dart';
 

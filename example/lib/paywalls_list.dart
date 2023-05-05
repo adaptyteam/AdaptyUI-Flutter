@@ -52,10 +52,12 @@ class _PaywallsListState extends State<PaywallsList> {
   Future<void> _createAndPresentPaywallView(AdaptyPaywall paywall) async {
     try {
       final view = await AdaptyUI().createPaywallView(paywall: paywall);
-      await AdaptyUI().presentPaywallView(view);
+      await view.present();
     } on AdaptyError catch (adaptyError) {
       print('error');
-    } catch (e) {}
+    } catch (e) {
+      print('error');
+    }
   }
 
   @override
