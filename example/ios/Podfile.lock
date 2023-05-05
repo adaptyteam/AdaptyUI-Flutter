@@ -39,7 +39,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   AdaptyUI:
-    :commit: 28c5a7fc55491c273669323591cc44aee19920c4
+    :commit: 6e4d75247e4ecaa0901f1b9bc255097f8a284f7e
     :git: "git@github.com:adaptyteam/AdaptyUI-iOS.git"
 
 SPEC CHECKSUMS:

@@ -1,16 +1,17 @@
+import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
 import 'package:adapty_ui_flutter/src/models/private/json_builder.dart';
 import 'package:meta/meta.dart' show immutable;
 
-part 'private/adaptyui_view_configuration_json_builder.dart';
+part 'private/adaptyui_view_json_builder.dart';
 
 @immutable
-class AdaptyUIViewConfiguration {
+class AdaptyUIView {
   final String id;
   final String templateId;
   final String paywallId;
   final String paywallVariationId;
 
-  const AdaptyUIViewConfiguration._(
+  const AdaptyUIView._(
     this.id,
     this.templateId,
     this.paywallId,
@@ -23,4 +24,8 @@ class AdaptyUIViewConfiguration {
       'templateId: $templateId, '
       'paywallId: $paywallId, '
       'paywallVariationId: $paywallVariationId';
+
+  Future<void> present() => AdaptyUI().presentPaywallView(this);
+
+  Future<void> dismiss() => AdaptyUI().dismissPaywallView(this);
 }

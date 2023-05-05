@@ -13,10 +13,10 @@ class PaywallsList extends StatefulWidget {
 class PaywallsListItem {
   String id;
   AdaptyPaywall? paywall;
-  AdaptyUIViewConfiguration? viewConfiguration;
+  AdaptyUIView? view;
   AdaptyError? error;
 
-  PaywallsListItem({required this.id, this.paywall, this.viewConfiguration, this.error});
+  PaywallsListItem({required this.id, this.paywall, this.view, this.error});
 }
 
 class _PaywallsListState extends State<PaywallsList> {
@@ -51,8 +51,8 @@ class _PaywallsListState extends State<PaywallsList> {
 
   Future<void> _createAndPresentPaywallView(AdaptyPaywall paywall) async {
     try {
-      final instanceId = await AdaptyUI().createPaywallView(paywall: paywall);
-      await AdaptyUI().presentPaywallView(instanceId: instanceId);
+      final view = await AdaptyUI().createPaywallView(paywall: paywall);
+      await AdaptyUI().presentPaywallView(view);
     } on AdaptyError catch (adaptyError) {
       print('error');
     } catch (e) {}

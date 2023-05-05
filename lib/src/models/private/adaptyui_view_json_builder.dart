@@ -1,6 +1,6 @@
-part of '../adaptyui_view_configuration.dart';
+part of '../adaptyui_view.dart';
 
-extension AdaptyUIViewConfigurationJSONBuilder on AdaptyUIViewConfiguration {
+extension AdaptyUIViewJSONBuilder on AdaptyUIView {
   dynamic get jsonValue => {
         _Keys.id: id,
         _Keys.templateId: templateId,
@@ -8,8 +8,8 @@ extension AdaptyUIViewConfigurationJSONBuilder on AdaptyUIViewConfiguration {
         _Keys.paywallVariationId: paywallVariationId,
       };
 
-  static AdaptyUIViewConfiguration fromJsonValue(Map<String, dynamic> json) {
-    return AdaptyUIViewConfiguration._(
+  static AdaptyUIView fromJsonValue(Map<String, dynamic> json) {
+    return AdaptyUIView._(
       json.string(_Keys.id),
       json.string(_Keys.templateId),
       json.string(_Keys.paywallId),
