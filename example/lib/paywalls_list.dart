@@ -13,10 +13,9 @@ class PaywallsList extends StatefulWidget {
 class PaywallsListItem {
   String id;
   AdaptyPaywall? paywall;
-  AdaptyUIView? view;
   AdaptyError? error;
 
-  PaywallsListItem({required this.id, this.paywall, this.view, this.error});
+  PaywallsListItem({required this.id, this.paywall, this.error});
 }
 
 class _PaywallsListState extends State<PaywallsList> {
@@ -32,8 +31,7 @@ class _PaywallsListState extends State<PaywallsList> {
 
   Future<void> _loadPaywallData(String id) async {
     try {
-      final paywall = await Adapty().getPaywall(id: id);
-      _paywallsItems[id] = PaywallsListItem(id: id, paywall: paywall);
+      _paywallsItems[id] = PaywallsListItem(id: id, paywall: await Adapty().getPaywall(id: id));
 
       setState(() {});
     } on AdaptyError catch (adaptyError) {
@@ -49,9 +47,15 @@ class _PaywallsListState extends State<PaywallsList> {
     }
   }
 
-  Future<void> _createAndPresentPaywallView(AdaptyPaywall paywall) async {
+  Future<void> _createAndPresentPaywallView(AdaptyPaywall paywall, bool loadProducts) async {
     try {
-      final view = await AdaptyUI().createPaywallView(paywall: paywall);
+      List<AdaptyPaywallProduct>? products;
+
+      if (loadProducts) {
+        products = await Adapty().getPaywallProducts(paywall: paywall);
+      }
+
+      final view = await AdaptyUI().createPaywallView(paywall: paywall, products: products);
       await view.present();
     } on AdaptyError catch (adaptyError) {
       print('error');
@@ -90,7 +94,11 @@ class _PaywallsListState extends State<PaywallsList> {
                     ),
                     ListActionTile(
                       title: 'Present',
-                      onTap: () => _createAndPresentPaywallView(item!.paywall!),
+                      onTap: () => _createAndPresentPaywallView(item!.paywall!, false),
+                    ),
+                    ListActionTile(
+                      title: 'Load Products and Present',
+                      onTap: () => _createAndPresentPaywallView(item!.paywall!, true),
                     ),
                   ],
           );
