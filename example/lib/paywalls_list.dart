@@ -25,7 +25,7 @@ class PaywallsListItem {
 }
 
 class _PaywallsListState extends State<PaywallsList> {
-  final List<String> _paywallsIds = ["london"];
+  final List<String> _paywallsIds = ['example_ab_test', 'london'];
   final Map<String, PaywallsListItem> _paywallsItems = {};
 
   @override
@@ -87,6 +87,47 @@ class _PaywallsListState extends State<PaywallsList> {
     }
   }
 
+  List<Widget> _buildErrorStatusItems() {
+    return const [
+      ListTextTile(
+        title: 'Status',
+        subtitle: 'Error',
+        subtitleColor: CupertinoColors.systemRed,
+      ),
+    ];
+  }
+
+  List<Widget> _buildPaywallItems(AdaptyPaywall paywall) {
+    return [
+      const ListTextTile(
+        title: 'Status',
+        subtitle: 'OK',
+        subtitleColor: CupertinoColors.systemGreen,
+      ),
+      ListTextTile(
+        title: 'Variation Id',
+        subtitle: paywall.variationId,
+      ),
+      ListTextTile(
+        title: 'Has View',
+        subtitle: paywall.hasViewConfiguration ? "true" : "false",
+        subtitleColor: paywall.hasViewConfiguration ? CupertinoColors.systemGreen : CupertinoColors.systemRed,
+      ),
+      if (paywall.hasViewConfiguration) ...[
+        ListActionTile(
+          title: 'Present',
+          showProgress: _loadingPaywall,
+          onTap: () => _createAndPresentPaywallView(paywall, false),
+        ),
+        ListActionTile(
+          title: 'Load Products and Present',
+          showProgress: _loadingPaywallWithProducts,
+          onTap: () => _createAndPresentPaywallView(paywall, true),
+        ),
+      ],
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -94,39 +135,7 @@ class _PaywallsListState extends State<PaywallsList> {
         children: _paywallsIds.map((paywallId) {
           final item = _paywallsItems[paywallId];
 
-          return ListSection(
-            headerText: 'Paywall $paywallId',
-            children: item?.paywall == null
-                ? const [
-                    ListTextTile(
-                      title: 'Status',
-                      subtitle: 'Error',
-                      subtitleColor: CupertinoColors.systemRed,
-                    ),
-                  ]
-                : [
-                    const ListTextTile(
-                      title: 'Status',
-                      subtitle: 'OK',
-                      subtitleColor: CupertinoColors.systemGreen,
-                    ),
-                    ListTextTile(
-                      title: 'Variation Id',
-                      subtitle: item?.paywall?.variationId,
-                      // subtitleColor: CupertinoColors.systemGreen,
-                    ),
-                    ListActionTile(
-                      title: 'Present',
-                      showProgress: _loadingPaywall,
-                      onTap: () => _createAndPresentPaywallView(item!.paywall!, false),
-                    ),
-                    ListActionTile(
-                      title: 'Load Products and Present',
-                      showProgress: _loadingPaywallWithProducts,
-                      onTap: () => _createAndPresentPaywallView(item!.paywall!, true),
-                    ),
-                  ],
-          );
+          return ListSection(headerText: 'Paywall $paywallId', children: item?.paywall == null ? _buildErrorStatusItems() : _buildPaywallItems(item!.paywall!));
         }).toList(),
       ),
     );

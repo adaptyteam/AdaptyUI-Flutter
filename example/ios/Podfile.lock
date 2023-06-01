@@ -1,6 +1,6 @@
 PODS:
   - Adapty (2.4.5)
-  - adapty_flutter (2.4.3):
+  - adapty_flutter (2.4.4):
     - Adapty (= 2.4.5)
     - Flutter
   - adapty_ui_flutter (1.0.0):
@@ -44,7 +44,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Adapty: 7d3ef97291d631d1711bb176c61dd5f26d143bd1
-  adapty_flutter: 1a4b354ddc54c1f0d94e4b4fe28b7d7380fff3bf
+  adapty_flutter: 27c33cd8e3f07bb015793730fde19a82a311aa49
   adapty_ui_flutter: 23653ffec7acb6891f1b6952c3564b8bf90029a3
   AdaptyUI: abc3ac4cd7b893605f219a058c0c326785a4786e
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
