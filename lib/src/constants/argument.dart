@@ -1,7 +1,8 @@
 class Argument {
   static const String id = 'id';
   static const String paywall = 'paywall';
-  static const String products = 'products';
+  static const String preloadProducts = 'preload_products';
+  static const String productsTitles = 'products_titles';
 
   static const String view = "view";
   static const String product = "product";

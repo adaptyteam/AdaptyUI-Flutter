@@ -23,8 +23,10 @@ class PurchasesObserver with AdaptyUIObserver {
       adapty.activate();
 
       AdaptyUI().addObserver(this);
+    } on AdaptyError catch (adaptyError) {
+      onAdaptyErrorOccurred?.call(adaptyError);
     } catch (e) {
-      print('#Example# activate error $e');
+      onUnknownErrorOccurred?.call(e);
     }
   }
 

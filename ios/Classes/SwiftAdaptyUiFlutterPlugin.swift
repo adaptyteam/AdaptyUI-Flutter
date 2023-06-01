@@ -5,30 +5,9 @@ import Flutter
 import UIKit
 
 public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
-    static var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.calendar = Calendar(identifier: .iso8601)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        return formatter
-    }()
-
-    static var jsonDecoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-        decoder.dataDecodingStrategy = .base64
-        return decoder
-    }()
-
-    static var jsonEncoder: JSONEncoder = {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .formatted(dateFormatter)
-        encoder.dataEncodingStrategy = .base64
-        return encoder
-    }()
-
     private static var channel: FlutterMethodChannel?
     private static let pluginInstance = SwiftAdaptyUiFlutterPlugin()
+    private static var adaptyUIDelegate: AdaptyUIDelegate!
 
     private var paywallControllers = [UUID: AdaptyPaywallController]()
 
@@ -39,6 +18,7 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
         registrar.addMethodCallDelegate(pluginInstance, channel: channel)
 
         self.channel = channel
+        adaptyUIDelegate = AdaptyUIDelegate(channel: channel)
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -60,9 +40,97 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
         paywallControllers[id] = controller
     }
 
+    private func deleteCachedPaywallController(_ id: String) {
+        guard let uuid = UUID(uuidString: id) else { return }
+        paywallControllers.removeValue(forKey: uuid)
+    }
+
     private func cachedPaywallController(_ id: String) -> AdaptyPaywallController? {
         guard let uuid = UUID(uuidString: id) else { return nil }
         return paywallControllers[uuid]
+    }
+
+    private func createView(paywall: AdaptyPaywall,
+                            products: [AdaptyPaywallProduct]?,
+                            viewConfiguration: AdaptyUI.ViewConfiguration,
+                            productsTitlesResolver: ((AdaptyProduct) -> String)?,
+                            flutterCall: FlutterMethodCall,
+                            flutterResult: @escaping FlutterResult) {
+        let vc = AdaptyUI.paywallController(for: paywall,
+                                            products: nil,
+                                            viewConfiguration: viewConfiguration,
+                                            delegate: Self.adaptyUIDelegate,
+                                            productsTitlesResolver: nil)
+
+        cachePaywallController(vc, id: vc.id)
+
+        flutterCall.callResult(
+            resultModel: vc.toView(),
+            result: flutterResult
+        )
+    }
+
+    private func preloadProductsAndCreateView(paywall: AdaptyPaywall,
+                                              preloadProducts: Bool,
+                                              viewConfiguration: AdaptyUI.ViewConfiguration,
+                                              productsTitlesResolver: ((AdaptyProduct) -> String)?,
+                                              flutterCall: FlutterMethodCall,
+                                              flutterResult: @escaping FlutterResult) {
+        guard preloadProducts else {
+            createView(paywall: paywall,
+                       products: nil,
+                       viewConfiguration: viewConfiguration,
+                       productsTitlesResolver: productsTitlesResolver,
+                       flutterCall: flutterCall,
+                       flutterResult: flutterResult)
+            return
+        }
+
+        Adapty.getPaywallProducts(paywall: paywall) { [weak self] result in
+            switch result {
+            case let .success(products):
+                self?.createView(paywall: paywall,
+                                 products: products,
+                                 viewConfiguration: viewConfiguration,
+                                 productsTitlesResolver: productsTitlesResolver,
+                                 flutterCall: flutterCall,
+                                 flutterResult: flutterResult)
+            case .failure:
+                // TODO: log error
+                self?.createView(paywall: paywall,
+                                 products: nil,
+                                 viewConfiguration: viewConfiguration,
+                                 productsTitlesResolver: productsTitlesResolver,
+                                 flutterCall: flutterCall,
+                                 flutterResult: flutterResult)
+            }
+        }
+    }
+
+    private func getConfigurationAndCreateView(paywall: AdaptyPaywall,
+                                               preloadProducts: Bool,
+                                               productsTitlesResolver: ((AdaptyProduct) -> String)?,
+                                               flutterCall: FlutterMethodCall,
+                                               flutterResult: @escaping FlutterResult) {
+        AdaptyUI.getViewConfiguration(forPaywall: paywall) { [weak self] result in
+            switch result {
+            case let .success(config):
+                let vc = AdaptyUI.paywallController(for: paywall,
+                                                    products: nil,
+                                                    viewConfiguration: config,
+                                                    delegate: Self.adaptyUIDelegate,
+                                                    productsTitlesResolver: productsTitlesResolver)
+
+                self?.cachePaywallController(vc, id: vc.id)
+
+                flutterCall.callResult(
+                    resultModel: vc.toView(),
+                    result: flutterResult
+                )
+            case let .failure(error):
+                flutterCall.callAdaptyError(flutterResult, error: error)
+            }
+        }
     }
 
     private func handleCreateView(_ flutterCall: FlutterMethodCall,
@@ -70,28 +138,21 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
                                   _ args: [String: Any]) {
         guard let paywallString = args[SwiftAdaptyUiFlutterConstants.paywall] as? String,
               let paywallData = paywallString.data(using: .utf8),
-              let paywall = try? Self.jsonDecoder.decode(AdaptyPaywall.self, from: paywallData) else {
+              let paywall = try? jsonDecoder.decode(AdaptyPaywall.self, from: paywallData) else {
             flutterCall.callParameterError(flutterResult, parameter: SwiftAdaptyUiFlutterConstants.paywall)
             return
         }
 
-        AdaptyUI.getViewConfiguration(forPaywall: paywall) { [weak self] result in
-            switch result {
-            case let .success(config):
-                let vc = AdaptyUI.paywallController(for: paywall,
-                                                    viewConfiguration: config,
-                                                    delegate: Self.pluginInstance)
+        let preloadProducts = args[SwiftAdaptyUiFlutterConstants.preloadProducts] as? Bool ?? false
+        let productsTitles = args[SwiftAdaptyUiFlutterConstants.productsTitles] as? [String: String]
 
-                self?.cachePaywallController(vc, id: vc.id)
-
-                flutterCall.callResult(
-                    resultModel: vc.adaptyUIViewModel,
-                    result: flutterResult
-                )
-            case let .failure(error):
-                flutterCall.callAdaptyError(flutterResult, error: error)
-            }
-        }
+        getConfigurationAndCreateView(
+            paywall: paywall,
+            preloadProducts: preloadProducts,
+            productsTitlesResolver: { productsTitles?[$0.vendorProductId] ?? $0.localizedTitle },
+            flutterCall: flutterCall,
+            flutterResult: flutterResult
+        )
     }
 
     private func handlePresentView(_ flutterCall: FlutterMethodCall,
@@ -106,7 +167,9 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
         vc.modalPresentationStyle = .fullScreen
 
         if let rootVC = UIApplication.shared.windows.first?.rootViewController {
-            rootVC.present(vc, animated: true)
+            rootVC.present(vc, animated: true) {
+                flutterResult(true)
+            }
         }
     }
 
@@ -119,279 +182,9 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
             return
         }
 
-        vc.dismiss(animated: true)
-    }
-}
-
-extension SwiftAdaptyUiFlutterPlugin: AdaptyPaywallControllerDelegate {
-    public func paywallControllerDidPressCloseButton(_ controller: AdaptyPaywallController) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidPressCloseButton.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
+        vc.dismiss(animated: true) { [weak self] in
+            self?.deleteCachedPaywallController(id)
+            flutterResult(true)
         }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didSelectProduct product: AdaptyPaywallProduct) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidSelectProduct.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.product.rawValue: try encodeModelToString(product),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didStartPurchase product: AdaptyPaywallProduct) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidStartPurchase.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.product.rawValue: try encodeModelToString(product),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didCancelPurchase product: AdaptyPaywallProduct) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidCancelPurchase.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.product.rawValue: try encodeModelToString(product),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didFinishPurchase product: AdaptyPaywallProduct,
-                                  profile: AdaptyProfile) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidFinishPurchase.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.product.rawValue: try encodeModelToString(product),
-                    ArgumentName.profile.rawValue: try encodeModelToString(profile),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didFailPurchase product: AdaptyPaywallProduct,
-                                  error: AdaptyError) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidFailPurchase.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.product.rawValue: try encodeModelToString(product),
-                    ArgumentName.error.rawValue: try encodeModelToString(error),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didFinishRestoreWith profile: AdaptyProfile) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidFinishRestore.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.profile.rawValue: try encodeModelToString(profile),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didFailRestoreWith error: AdaptyError) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidFailRestore.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.error.rawValue: try encodeModelToString(error),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didFailRenderingWith error: AdaptyError) {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidFailRendering.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.error.rawValue: try encodeModelToString(error),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-    }
-
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didFailLoadingProductsWith policy: AdaptyProductsFetchPolicy,
-                                  error: AdaptyError) -> Bool {
-        do {
-            Self.channel?.invokeMethod(
-                MethodName.paywallViewDidFailLoadingProducts.rawValue,
-                arguments: [
-                    ArgumentName.view.rawValue: try encodeModelToString(controller.adaptyUIViewModel),
-                    ArgumentName.fetchPolicy.rawValue: policy.JSONValue,
-                    ArgumentName.error.rawValue: try encodeModelToString(error),
-                ]
-            )
-        } catch {
-            Adapty.writeLog(level: .error,
-                            message: "Plugin encoding error: \(error.localizedDescription)")
-        }
-
-        return policy == .default
-    }
-}
-
-enum SwiftAdaptyUiFlutterPluginError: Error {
-    case encodeModelError
-}
-
-extension AdaptyProductsFetchPolicy {
-    var JSONValue: String {
-        switch self {
-        case .default:
-            return "default"
-        case .waitForReceiptValidation:
-            return "wait_for_receipt_validation"
-        }
-    }
-}
-
-extension SwiftAdaptyUiFlutterPlugin {
-    func encodeModelToString<T: Encodable>(_ model: T) throws -> String {
-        let resultData = try SwiftAdaptyUiFlutterPlugin.jsonEncoder.encode(model)
-        if let result = String(data: resultData, encoding: .utf8) {
-            return result
-        } else {
-            throw SwiftAdaptyUiFlutterPluginError.encodeModelError
-        }
-    }
-}
-
-extension FlutterMethodCall {
-    func callResult<T: Encodable>(resultModel: T, result: @escaping FlutterResult) {
-        do {
-            let resultData = try SwiftAdaptyUiFlutterPlugin.jsonEncoder.encode(resultModel)
-            let resultString = String(data: resultData, encoding: .utf8)
-            result(resultString)
-        } catch {
-            result(FlutterError.encoder(method: method, originalError: error))
-        }
-    }
-
-    func callParameterError(_ result: FlutterResult, parameter: String) {
-        result(FlutterError.missingParameter(name: parameter, method: method, originalError: nil))
-    }
-
-    func callAdaptyError(_ result: FlutterResult, error: AdaptyError?) {
-        guard let error = error else {
-            result(nil)
-            return
-        }
-
-        result(FlutterError.fromAdaptyError(error, method: method))
-    }
-}
-
-extension FlutterError {
-    static let adaptyErrorCode = "adapty_flutter_ios"
-
-    static let adaptyErrorMessageKey = "message"
-    static let adaptyErrorDetailKey = "detail"
-    static let adaptyErrorCodeKey = "adapty_code"
-
-    static func missingParameter(name: String, method: String, originalError: Error?) -> FlutterError {
-        let message = "Error while parsing parameter '\(name)'"
-        let detail = "Method: \(method), Parameter: \(name), OriginalError: \(originalError?.localizedDescription ?? "null")"
-
-        return FlutterError(code: adaptyErrorCode,
-                            message: message,
-                            details: [adaptyErrorCodeKey: AdaptyError.ErrorCode.decodingFailed.rawValue,
-                                      adaptyErrorMessageKey: message,
-                                      adaptyErrorDetailKey: detail])
-    }
-
-    static func encoder(method: String, originalError: Error) -> FlutterError {
-        let message = originalError.localizedDescription
-        let detail = "Method: \(method))"
-
-        return FlutterError(code: adaptyErrorCode,
-                            message: message,
-                            details: [adaptyErrorCodeKey: AdaptyError.ErrorCode.encodingFailed.rawValue,
-                                      adaptyErrorMessageKey: message,
-                                      adaptyErrorDetailKey: detail])
-    }
-
-    static func fromAdaptyError(_ adaptyError: AdaptyError, method: String) -> FlutterError {
-        do {
-            let adaptyErrorData = try SwiftAdaptyUiFlutterPlugin.jsonEncoder.encode(adaptyError)
-            let adaptyErrorString = String(data: adaptyErrorData, encoding: .utf8)
-
-            return FlutterError(code: adaptyErrorCode,
-                                message: adaptyError.localizedDescription,
-                                details: adaptyErrorString)
-        } catch {
-            return .encoder(method: method, originalError: error)
-        }
-    }
-}
-
-extension AdaptyPaywallController {
-    var adaptyUIViewModel: [String: String] {
-        [
-            SwiftAdaptyUiFlutterConstants.id: id.uuidString,
-            SwiftAdaptyUiFlutterConstants.templateId: viewConfiguration.templateId,
-            SwiftAdaptyUiFlutterConstants.paywallId: paywall.id,
-            SwiftAdaptyUiFlutterConstants.paywallVariationId: paywall.variationId,
-        ]
     }
 }

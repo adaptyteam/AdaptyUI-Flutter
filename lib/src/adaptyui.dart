@@ -16,6 +16,8 @@ import 'package:adapty_flutter/src/models/adapty_profile.dart';
 import 'package:adapty_flutter/src/models/adapty_error.dart';
 import 'package:adapty_flutter/src/models/adapty_sdk_native.dart';
 
+typedef AdaptyUIProductsTitlesResolver = String Function(String productId);
+
 class AdaptyUI {
   static final AdaptyUI _instance = AdaptyUI._internal();
 
@@ -41,10 +43,27 @@ class AdaptyUI {
     _activated = true;
   }
 
-  Future<AdaptyUIView> createPaywallView({required AdaptyPaywall paywall, List<AdaptyPaywallProduct>? products}) async {
+  Future<AdaptyUIView> createPaywallView({
+    required AdaptyPaywall paywall,
+    bool preloadProducts = false,
+    AdaptyUIProductsTitlesResolver? productsTitlesResolver,
+  }) async {
+    Map<String, String>? productsTitles;
+
+    if (productsTitlesResolver != null) {
+      productsTitles = <String, String>{};
+
+      for (var productId in paywall.vendorProductIds) {
+        productsTitles[productId] = productsTitlesResolver(productId);
+      }
+    } else {
+      productsTitles = null;
+    }
+
     final result = (await _invokeMethodHandlingErrors<String>(Method.createView, {
       Argument.paywall: json.encode(paywall.jsonValue),
-      if (products != null) Argument.products: products.map((e) => e.jsonValue).toList(),
+      Argument.preloadProducts: preloadProducts,
+      if (productsTitles != null) Argument.productsTitles: productsTitles,
     })) as String;
 
     final view = AdaptyUIViewJSONBuilder.fromJsonValue(json.decode(result));
@@ -86,7 +105,7 @@ class AdaptyUI {
         throw adaptyError;
       } else {
         AdaptyUILogger.write(AdaptyLogLevel.verbose, '<-- AdaptyUI.$method() Error $e');
-        throw e;
+        rethrow;
       }
     }
   }

@@ -11,13 +11,13 @@ class ListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoFormSection.insetGrouped(
-      header: this.headerText != null
+      header: headerText != null
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(headerText!.toUpperCase()),
             )
           : null,
-      footer: this.footerText != null
+      footer: footerText != null
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(footerText!),
@@ -47,7 +47,7 @@ class ListTextTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
         child: Text(
-          this.subtitle ?? '',
+          subtitle ?? '',
           style: theme.textStyle.copyWith(color: subtitleColor ?? CupertinoColors.systemGrey2),
         ),
       ),
@@ -63,6 +63,8 @@ class ListActionTile extends StatelessWidget {
 
   final String? subtitle;
 
+  final bool showProgress;
+
   final bool isActive;
   final void Function() onTap;
 
@@ -71,6 +73,7 @@ class ListActionTile extends StatelessWidget {
     required this.title,
     this.titleColor,
     this.subtitle,
+    this.showProgress = false,
     this.isActive = true,
     required this.onTap,
   }) : super(key: key);
@@ -95,6 +98,7 @@ class ListActionTile extends StatelessWidget {
               subtitle!,
               style: theme.textStyle.copyWith(color: CupertinoColors.systemGrey2),
             ),
+          if (showProgress) const CupertinoActivityIndicator(),
         ],
       ),
     );
@@ -123,7 +127,7 @@ class ListTextFieldTile extends StatelessWidget {
     return CupertinoTextField(
       placeholder: placeholder,
       placeholderStyle: TextStyle(color: placeholderColor ?? Colors.black26),
-      decoration: BoxDecoration(),
+      decoration: const BoxDecoration(),
       padding: const EdgeInsets.fromLTRB(20, 12, 12, 12),
       clearButtonMode: OverlayVisibilityMode.editing,
       onChanged: onChanged,

@@ -3,8 +3,14 @@ import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
 import 'package:adapty_ui_flutter_example/list_components.dart';
 import 'package:flutter/cupertino.dart';
 
+typedef OnAdaptyErrorCallback = void Function(AdaptyError error);
+typedef OnCustomErrorCallback = void Function(Object error);
+
 class PaywallsList extends StatefulWidget {
-  const PaywallsList({super.key});
+  const PaywallsList({super.key, required this.adaptyErrorCallback, required this.customErrorCallback});
+
+  final OnAdaptyErrorCallback adaptyErrorCallback;
+  final OnCustomErrorCallback customErrorCallback;
 
   @override
   State<PaywallsList> createState() => _PaywallsListState();
@@ -34,9 +40,13 @@ class _PaywallsListState extends State<PaywallsList> {
       _paywallsItems[id] = PaywallsListItem(id: id, paywall: await Adapty().getPaywall(id: id));
 
       setState(() {});
-    } on AdaptyError catch (adaptyError) {
-      _paywallsItems[id] = PaywallsListItem(id: id, error: adaptyError);
-    } catch (e) {}
+    } on AdaptyError catch (e) {
+      _paywallsItems[id] = PaywallsListItem(id: id, error: e);
+
+      widget.adaptyErrorCallback(e);
+    } catch (e) {
+      widget.customErrorCallback(e);
+    }
   }
 
   void _loadPaywalls() {
@@ -47,20 +57,33 @@ class _PaywallsListState extends State<PaywallsList> {
     }
   }
 
+  bool _loadingPaywall = false;
+  bool _loadingPaywallWithProducts = false;
+
   Future<void> _createAndPresentPaywallView(AdaptyPaywall paywall, bool loadProducts) async {
+    setState(() {
+      _loadingPaywall = !loadProducts;
+      _loadingPaywallWithProducts = loadProducts;
+    });
+
     try {
-      List<AdaptyPaywallProduct>? products;
-
-      if (loadProducts) {
-        products = await Adapty().getPaywallProducts(paywall: paywall);
-      }
-
-      final view = await AdaptyUI().createPaywallView(paywall: paywall, products: products);
+      final view = await AdaptyUI().createPaywallView(
+        paywall: paywall,
+        preloadProducts: loadProducts,
+        productsTitlesResolver: (productId) {
+          return "title_$productId";
+        },
+      );
       await view.present();
-    } on AdaptyError catch (adaptyError) {
-      print('error');
+    } on AdaptyError catch (e) {
+      widget.adaptyErrorCallback(e);
     } catch (e) {
-      print('error');
+      widget.customErrorCallback(e);
+    } finally {
+      setState(() {
+        _loadingPaywall = false;
+        _loadingPaywallWithProducts = false;
+      });
     }
   }
 
@@ -94,10 +117,12 @@ class _PaywallsListState extends State<PaywallsList> {
                     ),
                     ListActionTile(
                       title: 'Present',
+                      showProgress: _loadingPaywall,
                       onTap: () => _createAndPresentPaywallView(item!.paywall!, false),
                     ),
                     ListActionTile(
                       title: 'Load Products and Present',
+                      showProgress: _loadingPaywallWithProducts,
                       onTap: () => _createAndPresentPaywallView(item!.paywall!, true),
                     ),
                   ],
