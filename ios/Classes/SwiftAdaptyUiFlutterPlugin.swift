@@ -4,6 +4,15 @@ import AdaptyUI
 import Flutter
 import UIKit
 
+extension UIViewController {
+    var isOrContainsAdaptyController: Bool {
+        guard let presentedViewController = presentedViewController else {
+            return self is AdaptyPaywallController
+        }
+        return presentedViewController is AdaptyPaywallController
+    }
+}
+
 public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
     private static var channel: FlutterMethodChannel?
     private static let pluginInstance = SwiftAdaptyUiFlutterPlugin()
@@ -158,27 +167,47 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
     private func handlePresentView(_ flutterCall: FlutterMethodCall,
                                    _ flutterResult: @escaping FlutterResult,
                                    _ args: [String: Any]) {
-        guard let id = args[SwiftAdaptyUiFlutterConstants.id] as? String,
-              let vc = cachedPaywallController(id) else {
+        guard let id = args[SwiftAdaptyUiFlutterConstants.id] as? String else {
             flutterCall.callParameterError(flutterResult, parameter: SwiftAdaptyUiFlutterConstants.id)
+            return
+        }
+
+        guard let vc = cachedPaywallController(id) else {
+            let error = AdaptyError(AdaptyUIFlutterError.viewNotFound(id))
+            flutterCall.callAdaptyError(flutterResult, error: error)
             return
         }
 
         vc.modalPresentationStyle = .overFullScreen
 
-        if let rootVC = UIApplication.shared.windows.first?.rootViewController {
-            rootVC.present(vc, animated: true) {
-                flutterResult(true)
-            }
+        guard let rootVC = UIApplication.shared.windows.first?.rootViewController else {
+            let error = AdaptyError(AdaptyUIFlutterError.viewPresentationError(id))
+            flutterCall.callAdaptyError(flutterResult, error: error)
+            return
+        }
+
+        guard !rootVC.isOrContainsAdaptyController else {
+            let error = AdaptyError(AdaptyUIFlutterError.viewAlreadyPresented(id))
+            flutterCall.callAdaptyError(flutterResult, error: error)
+            return
+        }
+
+        rootVC.present(vc, animated: true) {
+            flutterResult(true)
         }
     }
 
     private func handleDismissView(_ flutterCall: FlutterMethodCall,
                                    _ flutterResult: @escaping FlutterResult,
                                    _ args: [String: Any]) {
-        guard let id = args[SwiftAdaptyUiFlutterConstants.id] as? String,
-              let vc = cachedPaywallController(id) else {
+        guard let id = args[SwiftAdaptyUiFlutterConstants.id] as? String else {
             flutterCall.callParameterError(flutterResult, parameter: SwiftAdaptyUiFlutterConstants.id)
+            return
+        }
+
+        guard let vc = cachedPaywallController(id) else {
+            let error = AdaptyError(AdaptyUIFlutterError.viewNotFound(id))
+            flutterCall.callAdaptyError(flutterResult, error: error)
             return
         }
 
