@@ -9,7 +9,6 @@ import 'adaptyui_logger.dart';
 import 'constants/argument.dart';
 import 'constants/method.dart';
 
-import 'package:adapty_flutter/src/models/adapty_ios_products_fetch_policy.dart';
 import 'package:adapty_flutter/src/models/adapty_paywall.dart';
 import 'package:adapty_flutter/src/models/adapty_paywall_product.dart';
 import 'package:adapty_flutter/src/models/adapty_profile.dart';
