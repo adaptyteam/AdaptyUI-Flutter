@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:adapty_ui_flutter_example/purchases_observer.dart';
 import 'package:flutter/cupertino.dart';
 

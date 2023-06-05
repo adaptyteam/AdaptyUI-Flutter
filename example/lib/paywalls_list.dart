@@ -71,7 +71,7 @@ class _PaywallsListState extends State<PaywallsList> {
         paywall: paywall,
         preloadProducts: loadProducts,
         productsTitlesResolver: (productId) {
-          return "title_$productId";
+          return 'title_$productId';
         },
       );
       await view.present();
@@ -110,7 +110,7 @@ class _PaywallsListState extends State<PaywallsList> {
       ),
       ListTextTile(
         title: 'Has View',
-        subtitle: paywall.hasViewConfiguration ? "true" : "false",
+        subtitle: paywall.hasViewConfiguration ? 'true' : 'false',
         subtitleColor: paywall.hasViewConfiguration ? CupertinoColors.systemGreen : CupertinoColors.systemRed,
       ),
       if (paywall.hasViewConfiguration) ...[

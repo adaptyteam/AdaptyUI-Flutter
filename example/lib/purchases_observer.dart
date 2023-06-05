@@ -95,7 +95,7 @@ class PurchasesObserver with AdaptyUIObserver {
   void paywallViewDidFinishPurchase(AdaptyUIView view, AdaptyPaywallProduct product, AdaptyProfile profile) {
     print('#Example# paywallViewDidFinishPurchase of $view');
 
-    if (profile.accessLevels["premium"]?.isActive ?? false) {
+    if (profile.accessLevels['premium']?.isActive ?? false) {
       view.dismiss();
     }
   }
@@ -109,7 +109,7 @@ class PurchasesObserver with AdaptyUIObserver {
   void paywallViewDidFinishRestore(AdaptyUIView view, AdaptyProfile profile) {
     print('#Example# paywallViewDidFinishRestore of $view');
 
-    if (profile.accessLevels["premium"]?.isActive ?? false) {
+    if (profile.accessLevels['premium']?.isActive ?? false) {
       view.dismiss();
     }
   }
