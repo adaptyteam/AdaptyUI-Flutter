@@ -164,7 +164,7 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
             return
         }
 
-        vc.modalPresentationStyle = .fullScreen
+        vc.modalPresentationStyle = .overFullScreen
 
         if let rootVC = UIApplication.shared.windows.first?.rootViewController {
             rootVC.present(vc, animated: true) {
