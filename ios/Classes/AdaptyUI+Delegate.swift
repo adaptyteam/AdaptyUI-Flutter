@@ -19,12 +19,13 @@ class AdaptyUIDelegate: NSObject, AdaptyPaywallControllerDelegate {
 
     private func invokeMethod(_ methodName: MethodName, arguments: [ArgumentName: Encodable]) {
         do {
-            channel.invokeMethod(
-                methodName.rawValue,
-                arguments: Dictionary(uniqueKeysWithValues: try arguments.map {
-                    ($0.rawValue, try encodeModelToString($1))
-                })
-            )
+            var args = [String: String]()
+
+            for (arg, model) in arguments {
+                args[arg.rawValue] = try encodeModelToString(model)
+            }
+
+            channel.invokeMethod(methodName.rawValue, arguments: args)
         } catch {
             AdaptyUI.writeLog(level: .error,
                               message: "Plugin encoding error: \(error.localizedDescription)")
