@@ -15,7 +15,7 @@ import 'package:adapty_flutter/src/models/adapty_profile.dart';
 import 'package:adapty_flutter/src/models/adapty_error.dart';
 import 'package:adapty_flutter/src/models/adapty_sdk_native.dart';
 
-typedef AdaptyUIProductsTitlesResolver = String Function(String productId);
+typedef AdaptyUIProductsTitlesResolver = String? Function(String productId);
 
 class AdaptyUI {
   static final AdaptyUI _instance = AdaptyUI._internal();
@@ -53,7 +53,8 @@ class AdaptyUI {
       productsTitles = <String, String>{};
 
       for (var productId in paywall.vendorProductIds) {
-        productsTitles[productId] = productsTitlesResolver(productId);
+        final title = productsTitlesResolver(productId);
+        if (title != null) productsTitles[productId] = title;
       }
     } else {
       productsTitles = null;
