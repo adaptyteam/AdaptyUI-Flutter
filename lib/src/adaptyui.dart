@@ -121,6 +121,9 @@ class AdaptyUI {
       case Method.paywallViewDidPressCloseButton:
         _observer!.paywallViewDidPressCloseButton(view);
         break;
+      case Method.paywallViewDidPerformSystemBackAction:
+        _observer!.paywallViewDidPerformSystemBackActionOnAndroid(view);
+        break;
       case Method.paywallViewDidSelectProduct:
         final product = AdaptyPaywallProductJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.product]));
         _observer!.paywallViewDidSelectProduct(view, product);

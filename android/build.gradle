@@ -1,4 +1,4 @@
-group 'io.adapty.adapty_ui_flutter'
+group 'com.adapty.adapty_ui_flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -11,6 +11,15 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+String localMavenPath = project.mkdir("localMaven").absolutePath
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "file://$localMavenPath" }
     }
 }
 
@@ -41,6 +50,17 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
     }
+
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.adapty.adapty_ui_flutter'
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'io.adapty:android-ui:1.1.0'
+    compileOnly 'io.adapty:android-sdk:2.4.3'
+    implementation 'io.adapty.internal:crossplatform:2.4.3'
 }

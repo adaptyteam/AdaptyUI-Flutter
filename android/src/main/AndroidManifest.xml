@@ -1,3 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.adapty.adapty_ui_flutter">
+    package="com.adapty.adapty_ui_flutter">
+
+    <application>
+        <activity
+            android:name=".AdaptyUiActivity"
+            android:configChanges="layoutDirection|locale|uiMode"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AdaptyVisualPaywallTheme" />
+    </application>
 </manifest>

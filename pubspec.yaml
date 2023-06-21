@@ -25,7 +25,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: io.adapty.adapty_ui_flutter
+        package: com.adapty.adapty_ui_flutter
         pluginClass: AdaptyUiFlutterPlugin
       ios:
         pluginClass: AdaptyUiFlutterPlugin

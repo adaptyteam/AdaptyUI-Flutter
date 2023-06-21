@@ -4,6 +4,7 @@ import 'models/adaptyui_view.dart';
 
 abstract class AdaptyUIObserver {
   void paywallViewDidPressCloseButton(AdaptyUIView view) => view.dismiss();
+  void paywallViewDidPerformSystemBackActionOnAndroid(AdaptyUIView view) => view.dismiss();
   void paywallViewDidSelectProduct(AdaptyUIView view, AdaptyPaywallProduct product) {}
   void paywallViewDidStartPurchase(AdaptyUIView view, AdaptyPaywallProduct product) {}
   void paywallViewDidCancelPurchase(AdaptyUIView view, AdaptyPaywallProduct product);
