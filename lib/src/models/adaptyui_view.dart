@@ -7,9 +7,16 @@ part 'private/adaptyui_view_json_builder.dart';
 
 @immutable
 class AdaptyUIView {
+  /// The unique identifier of the view.
   final String id;
+
+  /// The template identifier, which will be rendered.
   final String templateId;
+
+  /// The identifier of paywall.
   final String paywallId;
+
+  /// The identifier of paywall variation.
   final String paywallVariationId;
 
   const AdaptyUIView._(
@@ -26,7 +33,9 @@ class AdaptyUIView {
       'paywallId: $paywallId, '
       'paywallVariationId: $paywallVariationId';
 
+  /// Call this function if you wish to present the view.
   Future<void> present() => AdaptyUI().presentPaywallView(this);
 
+  /// Call this function if you wish to dismiss the view.
   Future<void> dismiss() => AdaptyUI().dismissPaywallView(this);
 }

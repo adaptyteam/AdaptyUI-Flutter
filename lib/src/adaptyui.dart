@@ -42,6 +42,15 @@ class AdaptyUI {
     _activated = true;
   }
 
+  /// Right after receiving ``AdaptyPaywall``, you can create the corresponding ``AdaptyUIView`` to present it afterwards.
+  ///
+  /// **Parameters**
+  /// - [paywall]: an [AdaptyPaywall] object, for which you are trying to get a controller.
+  /// - [preloadProducts]: If you pass `true`, `AdaptyUI` will automatically prefetch the required products at the moment of view assembly.
+  /// - [productsTitlesResolver]: Override products titles by passing this function.
+  ///
+  /// **Returns**
+  /// - an [AdaptyUIView] object, representing the requested paywall screen.
   Future<AdaptyUIView> createPaywallView({
     required AdaptyPaywall paywall,
     bool preloadProducts = false,
@@ -70,15 +79,23 @@ class AdaptyUI {
     return view;
   }
 
+  /// Call this function if you wish to present the view.
+  ///
+  /// **Parameters**
+  /// - [view]: an [AdaptyUIView] object, for which is representing the view.
   Future<void> presentPaywallView(AdaptyUIView view) async {
     return _invokeMethodHandlingErrors<void>(Method.presentView, {Argument.id: view.id});
   }
 
+  /// Call this function if you wish to dismiss the view.
+  ///
+  /// **Parameters**
+  /// - [view]: an [AdaptyUIView] object, for which is representing the view.
   Future<void> dismissPaywallView(AdaptyUIView view) async {
     return _invokeMethodHandlingErrors<void>(Method.dismissView, {Argument.id: view.id});
   }
 
-  /// Registers the given object as an AdaptyUI events observer.
+  /// Registers the given object as an [AdaptyUI] events observer.
   void addObserver(AdaptyUIObserver observer) => _observer = observer;
 
   /// Unregisters the given observer.
