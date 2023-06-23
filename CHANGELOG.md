@@ -1,3 +1,3 @@
-## 0.0.1
+## 1.1.0
 
-* TODO: Describe initial release.
+- Initial Release. [Read More.](https://docs.adapty.io/docs/paywall-builder-getting-started)
