@@ -48,7 +48,10 @@ class AdaptyUI {
   /// **Parameters**
   /// - [paywall]: an [AdaptyPaywall] object, for which you are trying to get a controller.
   /// - [preloadProducts]: If you pass `true`, `AdaptyUI` will automatically prefetch the required products at the moment of view assembly.
-  /// - [productsTitlesResolver]: Override products titles by passing this function.
+  /// - [androidPersonalizedOffers]: A map that determines whether the price for a given product is personalized.
+  /// Key is a string containing `basePlanId` and `vendorProductId` separated by `:`. If `basePlanId` is `null` or empty, only `vendorProductId` is used.
+  /// Example: `basePlanId:vendorProductId` or `vendorProductId`.
+  /// [Read more](https://developer.android.com/google/play/billing/integrate#personalized-price)
   ///
   /// **Returns**
   /// - an [AdaptyUIView] object, representing the requested paywall screen.
@@ -56,11 +59,13 @@ class AdaptyUI {
     required AdaptyPaywall paywall,
     required String locale,
     bool preloadProducts = false,
+    Map<String, bool>? androidPersonalizedOffers,
   }) async {
     final result = (await _invokeMethodHandlingErrors<String>(Method.createView, {
       Argument.paywall: json.encode(paywall.jsonValue),
       Argument.locale: locale,
       Argument.preloadProducts: preloadProducts,
+      if (androidPersonalizedOffers != null) Argument.personalizedOffers: androidPersonalizedOffers,
     })) as String;
 
     final view = AdaptyUIViewJSONBuilder.fromJsonValue(json.decode(result));

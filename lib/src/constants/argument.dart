@@ -3,6 +3,7 @@ class Argument {
   static const String paywall = 'paywall';
   static const String locale = 'locale';
   static const String preloadProducts = 'preload_products';
+  static const String personalizedOffers = 'personalized_offers';
 
   static const String view = 'view';
   static const String action = 'action';
