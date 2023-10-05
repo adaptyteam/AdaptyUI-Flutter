@@ -1,6 +1,6 @@
 package com.adapty.adapty_ui_flutter
 
-import com.adapty.adapty_ui_flutter.Dependencies.inject
+import com.adapty.internal.crossplatform.ui.CrossplatformUiHelper
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -17,10 +17,12 @@ class AdaptyUiFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
     private lateinit var channel: MethodChannel
 
-    private val callHandler: AdaptyUiCallHandler by inject()
+    private val callHandler: AdaptyUiCallHandler by lazy {
+        AdaptyUiCallHandler(CrossplatformUiHelper.shared)
+    }
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        Dependencies.init(flutterPluginBinding.applicationContext)
+        CrossplatformUiHelper.init(flutterPluginBinding.applicationContext)
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
         channel.setMethodCallHandler(this)
         callHandler.handleUiEvents(channel)
@@ -51,6 +53,6 @@ class AdaptyUiFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     }
 
     private fun onNewActivityPluginBinding(binding: ActivityPluginBinding?) {
-        callHandler.activity = binding?.activity
+        callHandler.setActivity(binding?.activity)
     }
 }
