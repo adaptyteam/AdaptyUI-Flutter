@@ -69,6 +69,7 @@ class _PaywallsListState extends State<PaywallsList> {
     try {
       final view = await AdaptyUI().createPaywallView(
         paywall: paywall,
+        locale: 'en',
         preloadProducts: loadProducts,
         productsTitlesResolver: (productId) {
           return 'title_$productId';

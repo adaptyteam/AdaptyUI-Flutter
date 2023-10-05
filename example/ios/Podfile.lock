@@ -1,13 +1,13 @@
 PODS:
-  - Adapty (2.4.5)
-  - adapty_flutter (2.4.4):
-    - Adapty (= 2.4.5)
+  - Adapty (2.7.0)
+  - adapty_flutter (2.7.0):
+    - Adapty (= 2.7.0)
     - Flutter
-  - adapty_ui_flutter (1.1.0):
-    - AdaptyUI (~> 1.1)
+  - adapty_ui_flutter (2.0.1):
+    - AdaptyUI (= 2.0.1)
     - Flutter
-  - AdaptyUI (1.1.0):
-    - Adapty (~> 2.4.0)
+  - AdaptyUI (2.0.1):
+    - Adapty (~> 2.7.0)
   - Flutter (1.0.0)
   - shared_preferences_foundation (0.0.1):
     - Flutter
@@ -35,10 +35,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/ios"
 
 SPEC CHECKSUMS:
-  Adapty: 7d3ef97291d631d1711bb176c61dd5f26d143bd1
-  adapty_flutter: 27c33cd8e3f07bb015793730fde19a82a311aa49
-  adapty_ui_flutter: 87eaeff1691d9fbdfa536829b617758e5c9dbe33
-  AdaptyUI: 89fcf41089d7ad27b2f9bae3f980b845f5a1f246
+  Adapty: 66d16579ed1966f1caf8d806e3f3f0d77d9968c7
+  adapty_flutter: dc8b0c2ac17aae5ecfd404eb5237010567a2b44d
+  adapty_ui_flutter: 9f0131fccbefb9f068ff7cec8d672cd63ba88177
+  AdaptyUI: 12232a648f050aad8820152ba9f42ec26bbc32ae
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
 

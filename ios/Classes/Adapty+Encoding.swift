@@ -38,14 +38,3 @@ func encodeModelToString<T: Encodable>(_ model: T) throws -> String {
         throw SwiftAdaptyUiFlutterPluginError.encodeModelError
     }
 }
-
-extension AdaptyProductsFetchPolicy {
-    var JSONValue: String {
-        switch self {
-        case .default:
-            return "default"
-        case .waitForReceiptValidation:
-            return "wait_for_receipt_validation"
-        }
-    }
-}

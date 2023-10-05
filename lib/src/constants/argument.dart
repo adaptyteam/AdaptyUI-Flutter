@@ -1,10 +1,11 @@
 class Argument {
   static const String id = 'id';
   static const String paywall = 'paywall';
+  static const String locale = 'locale';
   static const String preloadProducts = 'preload_products';
-  static const String productsTitles = 'products_titles';
 
   static const String view = 'view';
+  static const String action = 'action';
   static const String product = 'product';
   static const String profile = 'profile';
   static const String fetchPolicy = 'fetch_policy';

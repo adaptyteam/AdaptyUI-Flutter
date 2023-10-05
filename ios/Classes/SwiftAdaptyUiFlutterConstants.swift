@@ -13,7 +13,7 @@ struct SwiftAdaptyUiFlutterConstants {
     static let id = "id"
     static let paywall = "paywall"
     static let preloadProducts = "preload_products"
-    static let productsTitles = "products_titles"
+    static let locale = "locale"
 
     static let paywallId = "paywall_id"
     static let paywallVariationId = "paywall_variation_id"
@@ -22,9 +22,9 @@ struct SwiftAdaptyUiFlutterConstants {
 
 enum ArgumentName: String {
     case view = "view"
+    case action = "action"
     case product = "product"
     case profile = "profile"
-    case fetchPolicy = "fetch_policy"
     case error = "error"
 }
 
@@ -33,7 +33,7 @@ enum MethodName: String {
     case presentView = "present_view"
     case dismissView = "dismiss_view"
 
-    case paywallViewDidPressCloseButton = "paywall_view_did_press_close_button"
+    case paywallViewDidPerformAction = "paywall_view_did_perform_action"
     case paywallViewDidSelectProduct = "paywall_view_did_select_product"
     case paywallViewDidStartPurchase = "paywall_view_did_start_purchase"
     case paywallViewDidCancelPurchase = "paywall_view_did_cancel_purchase"

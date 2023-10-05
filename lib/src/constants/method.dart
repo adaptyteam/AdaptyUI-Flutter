@@ -3,7 +3,7 @@ class Method {
   static const String presentView = 'present_view';
   static const String dismissView = 'dismiss_view';
 
-  static const String paywallViewDidPressCloseButton = 'paywall_view_did_press_close_button';
+  static const String paywallViewDidPerformAction = 'paywall_view_did_perform_action';
   static const String paywallViewDidPerformSystemBackAction = 'paywall_view_did_perform_system_back_action';
   static const String paywallViewDidSelectProduct = 'paywall_view_did_select_product';
   static const String paywallViewDidStartPurchase = 'paywall_view_did_start_purchase';

@@ -1,4 +1,5 @@
 import 'package:adapty_flutter/adapty_flutter.dart';
+import 'package:adapty_ui_flutter/src/models/adaptyui_action.dart';
 
 import 'models/adaptyui_view.dart';
 
@@ -11,17 +12,15 @@ abstract class AdaptyUIObserver {
   /// ```
   /// **Parameters**
   /// - [view]: an [AdaptyUIView] within which the event occurred.
-  void paywallViewDidPressCloseButton(AdaptyUIView view) => view.dismiss();
-
-  /// If the user presses the Android System Back Button, this method will be invoked.
-  ///
-  /// The default implementation is simply dismissing the view:
-  /// ```
-  /// view.dismiss()
-  /// ```
-  /// **Parameters**
-  /// - [view]: an [AdaptyUIView] within which the event occurred.
-  void paywallViewDidPerformSystemBackActionOnAndroid(AdaptyUIView view) => view.dismiss();
+  void paywallViewDidPerformAction(AdaptyUIView view, AdaptyUIAction action) {
+    switch (action.type) {
+      case AdaptyUIActionType.close:
+        view.dismiss();
+        break;
+      default:
+        break;
+    }
+  }
 
   /// If product was selected for purchase (by user or by system), this method will be invoked.
   ///
@@ -94,7 +93,6 @@ abstract class AdaptyUIObserver {
   ///
   /// **Parameters**
   /// - [view]: an [AdaptyUIView] within which the event occurred.
-  /// - [fetchPolicy]: an [AdaptyIOSProductsFetchPolicy] value with which the process was started.
   /// - [error]: an [AdaptyError] object representing the error.
-  void paywallViewDidFailLoadingProducts(AdaptyUIView view, AdaptyIOSProductsFetchPolicy? fetchPolicy, AdaptyError error) {}
+  void paywallViewDidFailLoadingProducts(AdaptyUIView view, AdaptyError error) {}
 }

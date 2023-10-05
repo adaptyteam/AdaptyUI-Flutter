@@ -1,6 +1,7 @@
 import 'dart:async' show Future;
 import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
+import 'package:adapty_ui_flutter/src/models/adaptyui_action.dart';
 
 class PurchasesObserver with AdaptyUIObserver {
   void Function(AdaptyError)? onAdaptyErrorOccurred;
@@ -56,9 +57,9 @@ class PurchasesObserver with AdaptyUIObserver {
     return null;
   }
 
-  Future<List<AdaptyPaywallProduct>?> callGetPaywallProducts(AdaptyPaywall paywall, AdaptyIOSProductsFetchPolicy fetchPolicy) async {
+  Future<List<AdaptyPaywallProduct>?> callGetPaywallProducts(AdaptyPaywall paywall) async {
     try {
-      final result = await adapty.getPaywallProducts(paywall: paywall, fetchPolicy: fetchPolicy);
+      final result = await adapty.getPaywallProducts(paywall: paywall);
       return result;
     } on AdaptyError catch (adaptyError) {
       onAdaptyErrorOccurred?.call(adaptyError);
@@ -70,10 +71,16 @@ class PurchasesObserver with AdaptyUIObserver {
   }
 
   @override
-  void paywallViewDidPressCloseButton(AdaptyUIView view) {
-    print('#Example# paywallViewDidPressCloseButton of $view');
+  void paywallViewDidPerformAction(AdaptyUIView view, AdaptyUIAction action) {
+    print('#Example# paywallViewDidPerformAction ${action.type} of $view');
 
-    view.dismiss();
+    switch (action.type) {
+      case AdaptyUIActionType.close:
+        view.dismiss();
+        break;
+      default:
+        break;
+    }
   }
 
   @override
@@ -82,7 +89,7 @@ class PurchasesObserver with AdaptyUIObserver {
   }
 
   @override
-  void paywallViewDidFailLoadingProducts(AdaptyUIView view, AdaptyIOSProductsFetchPolicy? fetchPolicy, AdaptyError error) {
+  void paywallViewDidFailLoadingProducts(AdaptyUIView view, AdaptyError error) {
     print('#Example# paywallViewDidFailLoadingProducts of $view, error = $error');
   }
 

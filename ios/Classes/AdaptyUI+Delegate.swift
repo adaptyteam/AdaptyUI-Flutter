@@ -10,6 +10,28 @@ import AdaptyUI
 import Flutter
 import Foundation
 
+extension AdaptyUI {
+    struct ActionProxy: Codable {
+        let type: String
+        let value: String?
+
+        init(type: String, value: String?) {
+            self.type = type
+            self.value = value
+        }
+    }
+}
+
+extension AdaptyUI.Action {
+    var codableAction: AdaptyUI.ActionProxy {
+        switch self {
+        case .close: return AdaptyUI.ActionProxy(type: "close", value: nil)
+        case let .openURL(url): return AdaptyUI.ActionProxy(type: "open_url", value: url.absoluteString)
+        case let .custom(id): return AdaptyUI.ActionProxy(type: "custom", value: id)
+        }
+    }
+}
+
 class AdaptyUIDelegate: NSObject, AdaptyPaywallControllerDelegate {
     let channel: FlutterMethodChannel
 
@@ -32,10 +54,11 @@ class AdaptyUIDelegate: NSObject, AdaptyPaywallControllerDelegate {
         }
     }
 
-    public func paywallControllerDidPressCloseButton(_ controller: AdaptyPaywallController) {
-        invokeMethod(.paywallViewDidPressCloseButton,
+    func paywallController(_ controller: AdaptyPaywallController, didPerform action: AdaptyUI.Action) {
+        invokeMethod(.paywallViewDidPerformAction,
                      arguments: [
                          .view: controller.toView(),
+                         .action: action.codableAction,
                      ])
     }
 
@@ -115,16 +138,13 @@ class AdaptyUIDelegate: NSObject, AdaptyPaywallControllerDelegate {
                      ])
     }
 
-    public func paywallController(_ controller: AdaptyPaywallController,
-                                  didFailLoadingProductsWith policy: AdaptyProductsFetchPolicy,
-                                  error: AdaptyError) -> Bool {
+    public func paywallController(_ controller: AdaptyPaywallController, didFailLoadingProductsWith error: AdaptyError) -> Bool {
         invokeMethod(.paywallViewDidFailLoadingProducts,
                      arguments: [
                          .view: controller.toView(),
-                         .fetchPolicy: policy.JSONValue,
                          .error: error,
                      ])
 
-        return policy == .default
+        return true
     }
 }

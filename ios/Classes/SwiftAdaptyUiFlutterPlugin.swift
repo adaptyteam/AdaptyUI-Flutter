@@ -61,15 +61,13 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
 
     private func createView(paywall: AdaptyPaywall,
                             products: [AdaptyPaywallProduct]?,
-                            viewConfiguration: AdaptyUI.ViewConfiguration,
-                            productsTitlesResolver: ((AdaptyProduct) -> String)?,
+                            viewConfiguration: AdaptyUI.LocalizedViewConfiguration,
                             flutterCall: FlutterMethodCall,
                             flutterResult: @escaping FlutterResult) {
         let vc = AdaptyUI.paywallController(for: paywall,
                                             products: nil,
                                             viewConfiguration: viewConfiguration,
-                                            delegate: Self.adaptyUIDelegate,
-                                            productsTitlesResolver: nil)
+                                            delegate: Self.adaptyUIDelegate)
 
         cachePaywallController(vc, id: vc.id)
 
@@ -81,15 +79,13 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
 
     private func preloadProductsAndCreateView(paywall: AdaptyPaywall,
                                               preloadProducts: Bool,
-                                              viewConfiguration: AdaptyUI.ViewConfiguration,
-                                              productsTitlesResolver: ((AdaptyProduct) -> String)?,
+                                              viewConfiguration: AdaptyUI.LocalizedViewConfiguration,
                                               flutterCall: FlutterMethodCall,
                                               flutterResult: @escaping FlutterResult) {
         guard preloadProducts else {
             createView(paywall: paywall,
                        products: nil,
                        viewConfiguration: viewConfiguration,
-                       productsTitlesResolver: productsTitlesResolver,
                        flutterCall: flutterCall,
                        flutterResult: flutterResult)
             return
@@ -101,7 +97,6 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
                 self?.createView(paywall: paywall,
                                  products: products,
                                  viewConfiguration: viewConfiguration,
-                                 productsTitlesResolver: productsTitlesResolver,
                                  flutterCall: flutterCall,
                                  flutterResult: flutterResult)
             case .failure:
@@ -109,7 +104,6 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
                 self?.createView(paywall: paywall,
                                  products: nil,
                                  viewConfiguration: viewConfiguration,
-                                 productsTitlesResolver: productsTitlesResolver,
                                  flutterCall: flutterCall,
                                  flutterResult: flutterResult)
             }
@@ -117,18 +111,17 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
     }
 
     private func getConfigurationAndCreateView(paywall: AdaptyPaywall,
+                                               locale: String,
                                                preloadProducts: Bool,
-                                               productsTitlesResolver: ((AdaptyProduct) -> String)?,
                                                flutterCall: FlutterMethodCall,
                                                flutterResult: @escaping FlutterResult) {
-        AdaptyUI.getViewConfiguration(forPaywall: paywall) { [weak self] result in
+        AdaptyUI.getViewConfiguration(forPaywall: paywall, locale: locale) { [weak self] result in
             switch result {
             case let .success(config):
                 let vc = AdaptyUI.paywallController(for: paywall,
                                                     products: nil,
                                                     viewConfiguration: config,
-                                                    delegate: Self.adaptyUIDelegate,
-                                                    productsTitlesResolver: productsTitlesResolver)
+                                                    delegate: Self.adaptyUIDelegate)
 
                 self?.cachePaywallController(vc, id: vc.id)
 
@@ -152,13 +145,17 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
             return
         }
 
+        guard let locale = args[SwiftAdaptyUiFlutterConstants.locale] as? String else {
+            flutterCall.callParameterError(flutterResult, parameter: SwiftAdaptyUiFlutterConstants.locale)
+            return
+        }
+        
         let preloadProducts = args[SwiftAdaptyUiFlutterConstants.preloadProducts] as? Bool ?? false
-        let productsTitles = args[SwiftAdaptyUiFlutterConstants.productsTitles] as? [String: String]
 
         getConfigurationAndCreateView(
             paywall: paywall,
+            locale: locale,
             preloadProducts: preloadProducts,
-            productsTitlesResolver: { productsTitles?[$0.vendorProductId] ?? $0.localizedTitle },
             flutterCall: flutterCall,
             flutterResult: flutterResult
         )
@@ -178,6 +175,7 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
             return
         }
 
+        vc.modalPresentationCapturesStatusBarAppearance = true
         vc.modalPresentationStyle = .overFullScreen
 
         guard let rootVC = UIApplication.shared.windows.first?.rootViewController else {
