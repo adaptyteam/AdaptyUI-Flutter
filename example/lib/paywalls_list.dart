@@ -71,9 +71,7 @@ class _PaywallsListState extends State<PaywallsList> {
         paywall: paywall,
         locale: 'en',
         preloadProducts: loadProducts,
-        productsTitlesResolver: (productId) {
-          return 'title_$productId';
-        },
+        androidPersonalizedOffers: {'testPlan:testProduct': true},
       );
       await view.present();
     } on AdaptyError catch (e) {
