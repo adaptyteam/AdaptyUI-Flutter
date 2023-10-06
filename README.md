@@ -36,7 +36,7 @@ After fetching the paywall call the `AdaptyUI.createPaywallView()` method to ass
 import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
 
 try {
-  final view = await AdaptyUI().createPaywallView(paywall: paywall);
+  final view = await AdaptyUI().createPaywallView(paywall: paywall, locale: 'en');
 } on AdaptyError catch (e) {
   // handle the error
 } catch (e) {
