@@ -1,7 +1,6 @@
 import 'dart:async' show Future;
 import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
-import 'package:adapty_ui_flutter/src/models/adaptyui_action.dart';
 
 class PurchasesObserver with AdaptyUIObserver {
   void Function(AdaptyError)? onAdaptyErrorOccurred;
