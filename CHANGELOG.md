@@ -1,3 +1,7 @@
+## 2.0.1
+
+- minor internal improvements for better RTL languages support
+
 ## 2.0.0
 
 🎉 We are happy to introduce our new version of AdaptyUI SDK! Please, revise our [documentation](https://docs.adapty.io/docs/paywall-builder-installation-flutter).
