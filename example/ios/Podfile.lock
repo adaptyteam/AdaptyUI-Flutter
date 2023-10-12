@@ -3,10 +3,10 @@ PODS:
   - adapty_flutter (2.7.0):
     - Adapty (= 2.7.0)
     - Flutter
-  - adapty_ui_flutter (2.0.0):
-    - AdaptyUI (= 2.0.1)
+  - adapty_ui_flutter (2.0.1):
+    - AdaptyUI (= 2.0.2)
     - Flutter
-  - AdaptyUI (2.0.1):
+  - AdaptyUI (2.0.2):
     - Adapty (~> 2.7.0)
   - Flutter (1.0.0)
   - shared_preferences_foundation (0.0.1):
@@ -37,8 +37,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Adapty: 66d16579ed1966f1caf8d806e3f3f0d77d9968c7
   adapty_flutter: dc8b0c2ac17aae5ecfd404eb5237010567a2b44d
-  adapty_ui_flutter: b2706b163ba47e1b247a72611cc50d338381e25f
-  AdaptyUI: 12232a648f050aad8820152ba9f42ec26bbc32ae
+  adapty_ui_flutter: ab874f730e304345fe5083f3a15b8f1295d48f7d
+  AdaptyUI: 5dbd7cdff05c1d1aa2b44949ebeb65b87a44ffb6
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
 
