@@ -1,3 +1,7 @@
+## 2.0.4
+
+- [Android] fixed dependencies
+
 ## 2.0.3
 
 - [Android] fixed wrong text alignment in some configurations
