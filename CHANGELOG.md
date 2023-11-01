@@ -1,3 +1,7 @@
+## 2.0.3
+
+- [Android] fixed wrong text alignment in some configurations
+
 ## 2.0.2
 
 - [iOS] fixed a bug where paywallViewDidFinishPurchase was not being fired
