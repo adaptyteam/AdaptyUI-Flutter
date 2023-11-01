@@ -60,8 +60,8 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'io.adapty:android-ui:2.0.2'
+    implementation 'io.adapty:android-ui:2.0.3'
     compileOnly 'io.adapty:android-sdk:2.7.0'
-    compileOnly 'io.adapty.internal:crossplatform:2.7.0'
-    implementation 'io.adapty.internal:crossplatform-ui:2.0.0'
+    compileOnly 'io.adapty.internal:crossplatform:2.7.1'
+    implementation 'io.adapty.internal:crossplatform-ui:2.0.1'
 }

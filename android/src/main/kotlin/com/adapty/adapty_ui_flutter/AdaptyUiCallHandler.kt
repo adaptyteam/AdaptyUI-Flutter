@@ -56,7 +56,7 @@ internal class AdaptyUiCallHandler(
             locale,
             preloadProducts,
             personalizedOffers,
-            { jsonView -> result.success(jsonView) },
+            { view -> result.success(serialization.toJson(view)) },
             { error -> handleAdaptyError(result, error) },
         )
     }
