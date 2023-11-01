@@ -91,12 +91,12 @@ class AdaptyUIDelegate: NSObject, AdaptyPaywallControllerDelegate {
 
     public func paywallController(_ controller: AdaptyPaywallController,
                                   didFinishPurchase product: AdaptyPaywallProduct,
-                                  profile: AdaptyProfile) {
+                                  purchasedInfo: AdaptyPurchasedInfo) {
         invokeMethod(.paywallViewDidFinishPurchase,
                      arguments: [
                          .view: controller.toView(),
                          .product: product,
-                         .profile: profile,
+                         .profile: purchasedInfo.profile,
                      ])
     }
 
@@ -138,7 +138,8 @@ class AdaptyUIDelegate: NSObject, AdaptyPaywallControllerDelegate {
                      ])
     }
 
-    public func paywallController(_ controller: AdaptyPaywallController, didFailLoadingProductsWith error: AdaptyError) -> Bool {
+    public func paywallController(_ controller: AdaptyPaywallController, 
+                                  didFailLoadingProductsWith error: AdaptyError) -> Bool {
         invokeMethod(.paywallViewDidFailLoadingProducts,
                      arguments: [
                          .view: controller.toView(),

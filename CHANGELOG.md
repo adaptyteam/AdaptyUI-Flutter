@@ -1,3 +1,7 @@
+## 2.0.2
+
+- [iOS] fixed a bug where paywallViewDidFinishPurchase was not being fired
+
 ## 2.0.1
 
 - minor internal improvements for better RTL languages support
