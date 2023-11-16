@@ -1,3 +1,7 @@
+## 2.0.5
+
+- [Android] fixed rendering and initial product selection in some circumstances
+
 ## 2.0.4
 
 - [Android] fixed dependencies
