@@ -2,7 +2,6 @@ package com.adapty.adapty_ui_flutter
 
 import android.app.Activity
 import com.adapty.errors.AdaptyError
-import com.adapty.errors.AdaptyErrorCode
 import com.adapty.internal.crossplatform.ui.AdaptyUiBridgeError
 import com.adapty.internal.crossplatform.ui.CrossplatformUiHelper
 import com.adapty.models.AdaptyPaywall
@@ -125,10 +124,12 @@ internal class AdaptyUiCallHandler(
         result.error(
             ADAPTY_ERROR_CODE,
             message,
-            mapOf(
-                ADAPTY_ERROR_CODE_KEY to AdaptyErrorCode.DECODING_FAILED,
-                ADAPTY_ERROR_MESSAGE_KEY to message,
-                ADAPTY_ERROR_DETAIL_KEY to detail,
+            serialization.toJson(
+                mapOf(
+                    ADAPTY_ERROR_CODE_KEY to ADAPTY_ERROR_DECODING_FAILED,
+                    ADAPTY_ERROR_MESSAGE_KEY to message,
+                    ADAPTY_ERROR_DETAIL_KEY to detail,
+                )
             )
         )
     }
@@ -140,9 +141,11 @@ internal class AdaptyUiCallHandler(
         result.error(
             ADAPTY_ERROR_CODE,
             bridgeError.message,
-            mapOf(
-                ADAPTY_ERROR_CODE_KEY to bridgeError.errorCode,
-                ADAPTY_ERROR_MESSAGE_KEY to bridgeError.message,
+            serialization.toJson(
+                mapOf(
+                    ADAPTY_ERROR_CODE_KEY to bridgeError.rawCode,
+                    ADAPTY_ERROR_MESSAGE_KEY to bridgeError.message,
+                )
             )
         )
     }
@@ -162,5 +165,7 @@ internal class AdaptyUiCallHandler(
         const val ADAPTY_ERROR_MESSAGE_KEY = "message"
         const val ADAPTY_ERROR_DETAIL_KEY = "detail"
         const val ADAPTY_ERROR_CODE_KEY = "adapty_code"
+
+        const val ADAPTY_ERROR_DECODING_FAILED = 2006
     }
 }
