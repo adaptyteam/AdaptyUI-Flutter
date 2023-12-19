@@ -1,3 +1,7 @@
+## 2.0.6
+
+- [Android] fixed event handling in some circumstances
+
 ## 2.0.5
 
 - [Android] fixed rendering and initial product selection in some circumstances
