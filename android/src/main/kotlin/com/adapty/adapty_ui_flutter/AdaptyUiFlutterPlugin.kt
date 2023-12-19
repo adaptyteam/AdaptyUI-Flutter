@@ -15,17 +15,19 @@ class AdaptyUiFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         private const val CHANNEL_NAME = "flutter.adapty.com/adapty_ui"
     }
 
-    private lateinit var channel: MethodChannel
+    private var channel: MethodChannel? = null
 
     private val callHandler: AdaptyUiCallHandler by lazy {
         AdaptyUiCallHandler(CrossplatformUiHelper.shared)
     }
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        CrossplatformUiHelper.init(flutterPluginBinding.applicationContext)
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
-        channel.setMethodCallHandler(this)
-        callHandler.handleUiEvents(channel)
+        if (CrossplatformUiHelper.init(flutterPluginBinding.applicationContext)) {
+            channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME).also { channel ->
+                channel.setMethodCallHandler(this)
+            }
+        }
+        channel?.let { channel -> callHandler.handleUiEvents(channel) }
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
@@ -33,7 +35,7 @@ class AdaptyUiFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
+        channel?.setMethodCallHandler(null)
     }
 
     override fun onDetachedFromActivity() {
