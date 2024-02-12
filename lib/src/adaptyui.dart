@@ -59,12 +59,14 @@ class AdaptyUI {
     required AdaptyPaywall paywall,
     required String locale,
     bool preloadProducts = false,
+    Map<String, String>? customTags,
     Map<String, bool>? androidPersonalizedOffers,
   }) async {
     final result = (await _invokeMethodHandlingErrors<String>(Method.createView, {
       Argument.paywall: json.encode(paywall.jsonValue),
       Argument.locale: locale,
       Argument.preloadProducts: preloadProducts,
+      if (customTags != null) Argument.customTags: customTags,
       if (androidPersonalizedOffers != null) Argument.personalizedOffers: androidPersonalizedOffers,
     })) as String;
 
