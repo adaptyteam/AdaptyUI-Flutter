@@ -12,6 +12,8 @@ class Argument {
   static const String fetchPolicy = 'fetch_policy';
   static const String error = 'error';
 
+  static const String configuration = 'configuration';
+
   static const String errorCodeAdapty = 'adapty_error';
   static const String errorCodeWrongParam = 'wrong_parameter';
   static const String errorCodeJsonEncode = 'json_encode';

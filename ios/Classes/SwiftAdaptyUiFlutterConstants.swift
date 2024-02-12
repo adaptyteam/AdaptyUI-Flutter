@@ -21,17 +21,19 @@ struct SwiftAdaptyUiFlutterConstants {
 }
 
 enum ArgumentName: String {
-    case view = "view"
-    case action = "action"
-    case product = "product"
-    case profile = "profile"
-    case error = "error"
+    case view
+    case action
+    case product
+    case profile
+    case error
+    case configuration
 }
 
 enum MethodName: String {
     case createView = "create_view"
     case presentView = "present_view"
     case dismissView = "dismiss_view"
+    case showDialog = "show_dialog"
 
     case paywallViewDidPerformAction = "paywall_view_did_perform_action"
     case paywallViewDidSelectProduct = "paywall_view_did_select_product"

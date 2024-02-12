@@ -40,6 +40,8 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
             handlePresentView(call, result, args)
         case .dismissView:
             handleDismissView(call, result, args)
+        case .showDialog:
+            handleShowDialog(call, result, args)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -149,7 +151,7 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
             flutterCall.callParameterError(flutterResult, parameter: SwiftAdaptyUiFlutterConstants.locale)
             return
         }
-        
+
         let preloadProducts = args[SwiftAdaptyUiFlutterConstants.preloadProducts] as? Bool ?? false
 
         getConfigurationAndCreateView(
@@ -213,5 +215,42 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
             self?.deleteCachedPaywallController(id)
             flutterResult(true)
         }
+    }
+
+    private func handleShowDialog(_ flutterCall: FlutterMethodCall,
+                                  _ flutterResult: @escaping FlutterResult,
+                                  _ args: [String: Any]) {
+        guard let id = args[SwiftAdaptyUiFlutterConstants.id] as? String else {
+            flutterCall.callParameterError(flutterResult, parameter: SwiftAdaptyUiFlutterConstants.id)
+            return
+        }
+
+        guard let configurationString = args[ArgumentName.configuration.rawValue] as? String,
+              let configurationData = configurationString.data(using: .utf8),
+              let configuration = try? jsonDecoder.decode(AdaptyUIDialogConfiguration.self, from: configurationData) else {
+            flutterCall.callParameterError(flutterResult, parameter: ArgumentName.configuration.rawValue)
+            return
+        }
+
+        guard let vc = cachedPaywallController(id) else {
+            let error = AdaptyError(AdaptyUIFlutterError.viewNotFound(id))
+            flutterCall.callAdaptyError(flutterResult, error: error)
+            return
+        }
+
+        let needsImideateResult = configuration.actions?.isEmpty ?? true
+
+        vc.showDialog(
+            configuration,
+            presentationCompletion: {
+                if needsImideateResult {
+                    flutterResult(nil)
+                }
+            }, handler: { actionIndex in
+                if !needsImideateResult {
+                    flutterResult(actionIndex)
+                }
+            }
+        )
     }
 }
