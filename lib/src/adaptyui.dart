@@ -166,6 +166,9 @@ class AdaptyUI {
         final profile = AdaptyProfileJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.profile]));
         _observer!.paywallViewDidFinishRestore(view, profile);
         break;
+      case Method.paywallViewDidStartRestore:
+        _observer!.paywallViewDidStartRestore(view);
+        break;
       case Method.paywallViewDidFailRestore:
         final error = AdaptyErrorJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.error]));
         _observer!.paywallViewDidFailRestore(view, error);

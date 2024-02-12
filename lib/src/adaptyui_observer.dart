@@ -63,6 +63,12 @@ abstract class AdaptyUIObserver {
   /// - [error]: an [AdaptyError] object representing the error.
   void paywallViewDidFailPurchase(AdaptyUIView view, AdaptyPaywallProduct product, AdaptyError error) {}
 
+  /// If user initiates the restore process, this method will be invoked.
+  ///
+  /// **Parameters**
+  /// - [view]: an [AdaptyUIView] within which the event occurred.
+  void paywallViewDidStartRestore(AdaptyUIView view) {}
+
   /// This method is invoked when a successful restore is made.
   ///
   /// Check if the [AdaptyProfile] object contains the desired access level, and if so, the controller can be dismissed.
