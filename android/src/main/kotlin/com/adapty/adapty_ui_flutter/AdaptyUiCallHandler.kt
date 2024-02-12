@@ -49,12 +49,14 @@ internal class AdaptyUiCallHandler(
         }
         val preloadProducts = getArgument(call, PRELOAD_PRODUCTS) ?: false
         val personalizedOffers = getArgument<HashMap<String, Boolean>>(call, PERSONALIZED_OFFERS)
+        val customTags = getArgument<HashMap<String, String>>(call, CUSTOM_TAGS)
 
         helper.handleCreateView(
             paywall,
             locale,
             preloadProducts,
             personalizedOffers,
+            customTags,
             { view -> result.success(serialization.toJson(view)) },
             { error -> handleAdaptyError(result, error) },
         )
@@ -160,6 +162,7 @@ internal class AdaptyUiCallHandler(
         const val LOCALE = "locale"
         const val PRELOAD_PRODUCTS = "preload_products"
         const val PERSONALIZED_OFFERS = "personalized_offers"
+        const val CUSTOM_TAGS = "custom_tags"
 
         const val ADAPTY_ERROR_CODE = "adapty_flutter_android"
         const val ADAPTY_ERROR_MESSAGE_KEY = "message"
