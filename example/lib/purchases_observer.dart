@@ -45,7 +45,7 @@ class PurchasesObserver with AdaptyUIObserver {
 
   Future<AdaptyPaywall?> callGetPaywall(String paywallId, String? locale) async {
     try {
-      final result = await adapty.getPaywall(id: paywallId, locale: locale);
+      final result = await adapty.getPaywall(placementId: paywallId, locale: locale);
       return result;
     } on AdaptyError catch (adaptyError) {
       onAdaptyErrorOccurred?.call(adaptyError);
@@ -109,6 +109,11 @@ class PurchasesObserver with AdaptyUIObserver {
   @override
   void paywallViewDidFailPurchase(AdaptyUIView view, AdaptyPaywallProduct product, AdaptyError error) {
     print('#Example# paywallViewDidFailPurchase of $view, error = $error');
+  }
+
+  @override
+  void paywallViewDidStartRestore(AdaptyUIView view) {
+    print('#Example# paywallViewDidStartRestore of $view');
   }
 
   @override

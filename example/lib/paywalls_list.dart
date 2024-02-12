@@ -37,7 +37,7 @@ class _PaywallsListState extends State<PaywallsList> {
 
   Future<void> _loadPaywallData(String id) async {
     try {
-      _paywallsItems[id] = PaywallsListItem(id: id, paywall: await Adapty().getPaywall(id: id));
+      _paywallsItems[id] = PaywallsListItem(id: id, paywall: await Adapty().getPaywall(placementId: id));
 
       setState(() {});
     } on AdaptyError catch (e) {
@@ -71,6 +71,7 @@ class _PaywallsListState extends State<PaywallsList> {
         paywall: paywall,
         locale: 'en',
         preloadProducts: loadProducts,
+        customTags: {'USERNAME': 'John'},
         androidPersonalizedOffers: {'testPlan:testProduct': true},
       );
       await view.present();
