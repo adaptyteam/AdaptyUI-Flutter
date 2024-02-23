@@ -64,12 +64,14 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
     private func createView(paywall: AdaptyPaywall,
                             products: [AdaptyPaywallProduct]?,
                             viewConfiguration: AdaptyUI.LocalizedViewConfiguration,
+                            tagResolver: AdaptyTagResolver?,
                             flutterCall: FlutterMethodCall,
                             flutterResult: @escaping FlutterResult) {
         let vc = AdaptyUI.paywallController(for: paywall,
                                             products: nil,
                                             viewConfiguration: viewConfiguration,
-                                            delegate: Self.adaptyUIDelegate)
+                                            delegate: Self.adaptyUIDelegate,
+                                            tagResolver: tagResolver)
 
         cachePaywallController(vc, id: vc.id)
 
@@ -82,12 +84,14 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
     private func preloadProductsAndCreateView(paywall: AdaptyPaywall,
                                               preloadProducts: Bool,
                                               viewConfiguration: AdaptyUI.LocalizedViewConfiguration,
+                                              tagResolver: AdaptyTagResolver?,
                                               flutterCall: FlutterMethodCall,
                                               flutterResult: @escaping FlutterResult) {
         guard preloadProducts else {
             createView(paywall: paywall,
                        products: nil,
                        viewConfiguration: viewConfiguration,
+                       tagResolver: tagResolver,
                        flutterCall: flutterCall,
                        flutterResult: flutterResult)
             return
@@ -99,6 +103,7 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
                 self?.createView(paywall: paywall,
                                  products: products,
                                  viewConfiguration: viewConfiguration,
+                                 tagResolver: tagResolver,
                                  flutterCall: flutterCall,
                                  flutterResult: flutterResult)
             case .failure:
@@ -106,6 +111,7 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
                 self?.createView(paywall: paywall,
                                  products: nil,
                                  viewConfiguration: viewConfiguration,
+                                 tagResolver: tagResolver,
                                  flutterCall: flutterCall,
                                  flutterResult: flutterResult)
             }
@@ -115,6 +121,7 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
     private func getConfigurationAndCreateView(paywall: AdaptyPaywall,
                                                locale: String,
                                                preloadProducts: Bool,
+                                               tagResolver: AdaptyTagResolver?,
                                                flutterCall: FlutterMethodCall,
                                                flutterResult: @escaping FlutterResult) {
         AdaptyUI.getViewConfiguration(forPaywall: paywall, locale: locale) { [weak self] result in
@@ -123,7 +130,8 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
                 let vc = AdaptyUI.paywallController(for: paywall,
                                                     products: nil,
                                                     viewConfiguration: config,
-                                                    delegate: Self.adaptyUIDelegate)
+                                                    delegate: Self.adaptyUIDelegate,
+                                                    tagResolver: tagResolver)
 
                 self?.cachePaywallController(vc, id: vc.id)
 
@@ -153,11 +161,13 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
         }
 
         let preloadProducts = args[SwiftAdaptyUiFlutterConstants.preloadProducts] as? Bool ?? false
-
+        let customTags = args[SwiftAdaptyUiFlutterConstants.customTags] as? [String: String]
+        
         getConfigurationAndCreateView(
             paywall: paywall,
             locale: locale,
             preloadProducts: preloadProducts,
+            tagResolver: customTags,
             flutterCall: flutterCall,
             flutterResult: flutterResult
         )

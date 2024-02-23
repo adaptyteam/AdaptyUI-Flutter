@@ -13,6 +13,7 @@ struct SwiftAdaptyUiFlutterConstants {
     static let id = "id"
     static let paywall = "paywall"
     static let preloadProducts = "preload_products"
+    static let customTags = "custom_tags"
     static let locale = "locale"
 
     static let paywallId = "paywall_id"
