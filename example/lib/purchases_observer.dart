@@ -77,6 +77,21 @@ class PurchasesObserver with AdaptyUIObserver {
       case AdaptyUIActionType.close:
         view.dismiss();
         break;
+      case AdaptyUIActionType.openUrl:
+        final dialog = AdaptyUIDialog(
+          title: 'Open URL?',
+          message: action.value,
+          actions: const [
+            AdaptyUIDialogAction(title: 'OK', style: AdaptyUIDialogActionStyle.standard),
+            AdaptyUIDialogAction(title: 'Cancel', style: AdaptyUIDialogActionStyle.cancel),
+          ],
+        );
+        view.showDialog(dialog).then((selectedActionIndex) {
+          if (selectedActionIndex == 0) {
+            // Open Url
+          }
+        });
+        break;
       default:
         break;
     }
@@ -120,14 +135,36 @@ class PurchasesObserver with AdaptyUIObserver {
   void paywallViewDidFinishRestore(AdaptyUIView view, AdaptyProfile profile) {
     print('#Example# paywallViewDidFinishRestore of $view');
 
+    _handleFinishRestore(view, profile);
+  }
+
+  Future<void> _handleFinishRestore(AdaptyUIView view, AdaptyProfile profile) async {
+    const dialog = AdaptyUIDialog(
+      title: 'Purchases Restored',
+      message: null,
+      actions: [
+        AdaptyUIDialogAction(title: 'OK', style: AdaptyUIDialogActionStyle.standard),
+      ],
+    );
+    await view.showDialog(dialog);
+
     if (profile.accessLevels['premium']?.isActive ?? false) {
-      view.dismiss();
+      await view.dismiss();
     }
   }
 
   @override
   void paywallViewDidFailRestore(AdaptyUIView view, AdaptyError error) {
     print('#Example# paywallViewDidFailRestore of $view, error = $error');
+
+    final dialog = AdaptyUIDialog(
+      title: 'Error!',
+      message: error.toString(),
+      actions: const [
+        AdaptyUIDialogAction(title: 'OK', style: AdaptyUIDialogActionStyle.standard),
+      ],
+    );
+    view.showDialog(dialog);
   }
 
   @override
