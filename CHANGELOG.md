@@ -1,3 +1,6 @@
+## 2.1.0
+- TODO:
+
 ## 2.0.6
 
 - [Android] fixed event handling in some circumstances
