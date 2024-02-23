@@ -2,6 +2,7 @@ import 'package:adapty_flutter/src/models/private/json_builder.dart';
 import 'package:meta/meta.dart' show immutable;
 
 import '../adaptyui.dart';
+import 'adaptyui_dialog.dart';
 
 part 'private/adaptyui_view_json_builder.dart';
 
@@ -38,4 +39,10 @@ class AdaptyUIView {
 
   /// Call this function if you wish to dismiss the view.
   Future<void> dismiss() => AdaptyUI().dismissPaywallView(this);
+
+  /// Call this function if you wish to present the dialog.
+  ///
+  /// **Parameters**
+  /// - [dialog]: an [AdaptyUIDialog] object, description of the desired dialog.
+  Future<int?> showDialog(AdaptyUIDialog dialog) => AdaptyUI().showDialog(this, dialog);
 }

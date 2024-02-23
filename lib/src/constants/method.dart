@@ -2,6 +2,7 @@ class Method {
   static const String createView = 'create_view';
   static const String presentView = 'present_view';
   static const String dismissView = 'dismiss_view';
+  static const String showDialog = 'show_dialog';
 
   static const String paywallViewDidPerformAction = 'paywall_view_did_perform_action';
   static const String paywallViewDidPerformSystemBackAction = 'paywall_view_did_perform_system_back_action';

@@ -1,5 +1,6 @@
 import 'dart:convert' show json;
 import 'package:adapty_ui_flutter/src/models/adaptyui_action.dart';
+import 'package:adapty_ui_flutter/src/models/adaptyui_dialog.dart';
 import 'package:adapty_ui_flutter/src/models/adaptyui_view.dart';
 import 'package:flutter/services.dart';
 import 'package:adapty_flutter/adapty_flutter.dart';
@@ -88,6 +89,18 @@ class AdaptyUI {
   /// - [view]: an [AdaptyUIView] object, for which is representing the view.
   Future<void> dismissPaywallView(AdaptyUIView view) async {
     return _invokeMethodHandlingErrors<void>(Method.dismissView, {Argument.id: view.id});
+  }
+
+  /// Call this function if you wish to present the dialog.
+  ///
+  /// **Parameters**
+  /// - [view]: an [AdaptyUIView] object, for which is representing the view.
+  /// - [dialog]: an [AdaptyUIDialog] object, description of the desired dialog.
+  Future<int?> showDialog(AdaptyUIView view, AdaptyUIDialog dialog) async {
+    return _invokeMethodHandlingErrors<int?>(Method.showDialog, {
+      Argument.id: view.id,
+      Argument.configuration: json.encode(dialog.jsonValue),
+    });
   }
 
   /// Registers the given object as an [AdaptyUI] events observer.
