@@ -39,6 +39,7 @@ enum MethodName: String {
     case paywallViewDidCancelPurchase = "paywall_view_did_cancel_purchase"
     case paywallViewDidFinishPurchase = "paywall_view_did_finish_purchase"
     case paywallViewDidFailPurchase = "paywall_view_did_fail_purchase"
+    case paywallViewDidStartRestore = "paywall_view_did_start_restore"
     case paywallViewDidFinishRestore = "paywall_view_did_finish_restore"
     case paywallViewDidFailRestore = "paywall_view_did_fail_restore"
     case paywallViewDidFailRendering = "paywall_view_did_fail_rendering"

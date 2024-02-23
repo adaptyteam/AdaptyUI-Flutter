@@ -28,7 +28,7 @@ extension AdaptyPaywallController {
     func toView() -> AdaptyUI.View {
         AdaptyUI.View(id: id.uuidString,
                       templateId: viewConfiguration.templateId,
-                      paywallId: paywall.id,
+                      paywallId: paywall.placementId,
                       paywallVariationId: paywall.variationId)
     }
 }

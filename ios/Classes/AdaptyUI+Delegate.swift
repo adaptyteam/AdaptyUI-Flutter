@@ -111,6 +111,13 @@ class AdaptyUIDelegate: NSObject, AdaptyPaywallControllerDelegate {
                      ])
     }
 
+    func paywallControllerDidStartRestore(_ controller: AdaptyPaywallController) {
+        invokeMethod(.paywallViewDidStartRestore,
+                     arguments: [
+                         .view: controller.toView(),
+                     ])
+    }
+
     public func paywallController(_ controller: AdaptyPaywallController,
                                   didFinishRestoreWith profile: AdaptyProfile) {
         invokeMethod(.paywallViewDidFinishRestore,
@@ -138,7 +145,7 @@ class AdaptyUIDelegate: NSObject, AdaptyPaywallControllerDelegate {
                      ])
     }
 
-    public func paywallController(_ controller: AdaptyPaywallController, 
+    public func paywallController(_ controller: AdaptyPaywallController,
                                   didFailLoadingProductsWith error: AdaptyError) -> Bool {
         invokeMethod(.paywallViewDidFailLoadingProducts,
                      arguments: [
