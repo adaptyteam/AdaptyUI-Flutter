@@ -3,28 +3,29 @@ import 'package:meta/meta.dart' show immutable;
 
 part 'private/adaptyui_dialog_json_builder.dart';
 
-enum AdaptyUIDialogActionStyle { standard, cancel, destructive }
-
 @immutable
 class AdaptyUIDialogAction {
   final String title;
-  final AdaptyUIDialogActionStyle style;
+  final void Function() onPressed;
 
   const AdaptyUIDialogAction({
     required this.title,
-    required this.style,
+    required this.onPressed,
   });
 }
 
 @immutable
 class AdaptyUIDialog {
   final String? title;
-  final String? message;
-  final List<AdaptyUIDialogAction>? actions;
+  final String? content;
+
+  final AdaptyUIDialogAction defaultAction;
+  final AdaptyUIDialogAction? secondaryAction;
 
   const AdaptyUIDialog({
     this.title,
-    this.message,
-    this.actions,
+    this.content,
+    required this.defaultAction,
+    this.secondaryAction,
   });
 }

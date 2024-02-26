@@ -96,11 +96,22 @@ class AdaptyUI {
   /// **Parameters**
   /// - [view]: an [AdaptyUIView] object, for which is representing the view.
   /// - [dialog]: an [AdaptyUIDialog] object, description of the desired dialog.
-  Future<int?> showDialog(AdaptyUIView view, AdaptyUIDialog dialog) async {
-    return _invokeMethodHandlingErrors<int?>(Method.showDialog, {
+  Future<void> showDialog(AdaptyUIView view, AdaptyUIDialog dialog) async {
+    final dismissActionIndex = await _invokeMethodHandlingErrors<int?>(Method.showDialog, {
       Argument.id: view.id,
       Argument.configuration: json.encode(dialog.jsonValue),
     });
+
+    switch (dismissActionIndex) {
+      case 0:
+        dialog.defaultAction.onPressed.call();
+        break;
+      case 1:
+        dialog.secondaryAction?.onPressed.call();
+        break;
+      default:
+        break;
+    }
   }
 
   /// Registers the given object as an [AdaptyUI] events observer.

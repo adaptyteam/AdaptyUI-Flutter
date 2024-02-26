@@ -44,5 +44,5 @@ class AdaptyUIView {
   ///
   /// **Parameters**
   /// - [dialog]: an [AdaptyUIDialog] object, description of the desired dialog.
-  Future<int?> showDialog(AdaptyUIDialog dialog) => AdaptyUI().showDialog(this, dialog);
+  Future<void> showDialog(AdaptyUIDialog dialog) => AdaptyUI().showDialog(this, dialog);
 }

@@ -162,7 +162,7 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
 
         let preloadProducts = args[SwiftAdaptyUiFlutterConstants.preloadProducts] as? Bool ?? false
         let customTags = args[SwiftAdaptyUiFlutterConstants.customTags] as? [String: String]
-        
+
         getConfigurationAndCreateView(
             paywall: paywall,
             locale: locale,
@@ -248,18 +248,12 @@ public class SwiftAdaptyUiFlutterPlugin: NSObject, FlutterPlugin {
             return
         }
 
-        let needsImideateResult = configuration.actions?.isEmpty ?? true
-
         vc.showDialog(
             configuration,
-            presentationCompletion: {
-                if needsImideateResult {
-                    flutterResult(nil)
-                }
-            }, handler: { actionIndex in
-                if !needsImideateResult {
-                    flutterResult(actionIndex)
-                }
+            defaultActionHandler: {
+                flutterResult(0)
+            }, secondaryActionHandler: {
+                flutterResult(1)
             }
         )
     }

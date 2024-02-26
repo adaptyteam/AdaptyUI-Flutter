@@ -16,12 +16,19 @@ struct AdaptyUIDialogConfiguration: Codable {
         }
 
         let title: String?
-        let style: Style
     }
 
     let title: String?
-    let message: String?
-    let actions: [Action]?
+    let content: String?
+    let defaultAction: Action
+    let secondaryAction: Action?
+
+    enum CodingKeys: String, CodingKey {
+        case title
+        case content
+        case defaultAction = "default_action"
+        case secondaryAction = "secondary_action"
+    }
 }
 
 extension AdaptyUIDialogConfiguration.Action.Style {
@@ -35,23 +42,29 @@ extension AdaptyUIDialogConfiguration.Action.Style {
 }
 
 extension UIAlertController {
-    static func create(_ configuration: AdaptyUIDialogConfiguration,
-                       handler: @escaping (Int) -> Void) -> UIAlertController {
+    static func create(
+        _ configuration: AdaptyUIDialogConfiguration,
+        defaultActionHandler: @escaping () -> Void,
+        secondaryActionHandler: @escaping () -> Void
+    ) -> UIAlertController {
         let alert = UIAlertController(title: configuration.title,
-                                      message: configuration.message,
+                                      message: configuration.content,
                                       preferredStyle: .alert)
 
-        if let actions = configuration.actions, !actions.isEmpty {
-            for idx in 0 ..< actions.count {
-                let action = actions[idx]
-
-                alert.addAction(
-                    .init(title: action.title,
-                          style: action.style.uiAlertActionStyle) { _ in
-                        handler(idx)
-                    }
-                )
+        alert.addAction(
+            .init(title: configuration.defaultAction.title,
+                  style: .cancel) { _ in
+                defaultActionHandler()
             }
+        )
+
+        if let secondaryAction = configuration.secondaryAction {
+            alert.addAction(
+                .init(title: secondaryAction.title,
+                      style: .default) { _ in
+                    secondaryActionHandler()
+                }
+            )
         }
 
         return alert
@@ -59,10 +72,14 @@ extension UIAlertController {
 }
 
 extension UIViewController {
-    func showDialog(_ configuration: AdaptyUIDialogConfiguration,
-                    presentationCompletion: @escaping () -> Void,
-                    handler: @escaping (Int) -> Void) {
-        let alert = UIAlertController.create(configuration, handler: handler)
-        present(alert, animated: true, completion: presentationCompletion)
+    func showDialog(
+        _ configuration: AdaptyUIDialogConfiguration,
+        defaultActionHandler: @escaping () -> Void,
+        secondaryActionHandler: @escaping () -> Void
+    ) {
+        let alert = UIAlertController.create(configuration,
+                                             defaultActionHandler: defaultActionHandler,
+                                             secondaryActionHandler: secondaryActionHandler)
+        present(alert, animated: true)
     }
 }

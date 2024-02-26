@@ -1,6 +1,8 @@
 import 'dart:async' show Future;
 import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:adapty_ui_flutter/adapty_ui_flutter.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class PurchasesObserver with AdaptyUIObserver {
   void Function(AdaptyError)? onAdaptyErrorOccurred;
@@ -80,17 +82,20 @@ class PurchasesObserver with AdaptyUIObserver {
       case AdaptyUIActionType.openUrl:
         final dialog = AdaptyUIDialog(
           title: 'Open URL?',
-          message: action.value,
-          actions: const [
-            AdaptyUIDialogAction(title: 'OK', style: AdaptyUIDialogActionStyle.standard),
-            AdaptyUIDialogAction(title: 'Cancel', style: AdaptyUIDialogActionStyle.cancel),
-          ],
+          content: action.value,
+          defaultAction: AdaptyUIDialogAction(
+            title: 'Cancel',
+            onPressed: () {},
+          ),
+          secondaryAction: AdaptyUIDialogAction(
+            title: 'OK',
+            onPressed: () {
+              // Open URL here
+            },
+          ),
         );
-        view.showDialog(dialog).then((selectedActionIndex) {
-          if (selectedActionIndex == 0) {
-            // Open Url
-          }
-        });
+
+        view.showDialog(dialog);
         break;
       default:
         break;
@@ -139,13 +144,12 @@ class PurchasesObserver with AdaptyUIObserver {
   }
 
   Future<void> _handleFinishRestore(AdaptyUIView view, AdaptyProfile profile) async {
-    const dialog = AdaptyUIDialog(
+    final dialog = AdaptyUIDialog(
       title: 'Purchases Restored',
-      message: null,
-      actions: [
-        AdaptyUIDialogAction(title: 'OK', style: AdaptyUIDialogActionStyle.standard),
-      ],
+      content: null,
+      defaultAction: AdaptyUIDialogAction(title: 'OK', onPressed: () {}),
     );
+
     await view.showDialog(dialog);
 
     if (profile.accessLevels['premium']?.isActive ?? false) {
@@ -159,11 +163,10 @@ class PurchasesObserver with AdaptyUIObserver {
 
     final dialog = AdaptyUIDialog(
       title: 'Error!',
-      message: error.toString(),
-      actions: const [
-        AdaptyUIDialogAction(title: 'OK', style: AdaptyUIDialogActionStyle.standard),
-      ],
+      content: error.toString(),
+      defaultAction: AdaptyUIDialogAction(title: 'OK', onPressed: () {}),
     );
+
     view.showDialog(dialog);
   }
 
