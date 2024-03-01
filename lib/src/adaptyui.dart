@@ -205,10 +205,6 @@ class AdaptyUI {
         final error = AdaptyErrorJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.error]));
         _observer!.paywallViewDidFailLoadingProducts(view, error);
         break;
-      case Method.paywallViewAwaitingSubscriptionUpdateParams:
-        final product = AdaptyPaywallProductJSONBuilder.fromJsonValue(json.decode(call.arguments[Argument.product]));
-        final result = _observer!.paywallViewAwaitingSubscriptionUpdateParams(view, product);
-        return Future.value(result);
       default:
         break;
     }

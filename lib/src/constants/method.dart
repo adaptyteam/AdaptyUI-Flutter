@@ -16,5 +16,4 @@ class Method {
   static const String paywallViewDidFailRestore = 'paywall_view_did_fail_restore';
   static const String paywallViewDidFailRendering = 'paywall_view_did_fail_rendering';
   static const String paywallViewDidFailLoadingProducts = 'paywall_view_did_fail_loading_products';
-  static const String paywallViewAwaitingSubscriptionUpdateParams = 'paywall_view_awaiting_subscription_update_params';
 }

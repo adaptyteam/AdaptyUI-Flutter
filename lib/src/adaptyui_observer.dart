@@ -101,19 +101,4 @@ abstract class AdaptyUIObserver {
   /// - [view]: an [AdaptyUIView] within which the event occurred.
   /// - [error]: an [AdaptyError] object representing the error.
   void paywallViewDidFailLoadingProducts(AdaptyUIView view, AdaptyError error) {}
-
-  /// This callback is invoked when user initiates the purchase process, providing the ability
-  /// to supply an [AdaptyAndroidSubscriptionUpdateParameters] object.
-  /// This is used when you need one subscription to be replaced with another.
-  ///
-  /// **Parameters**
-  /// - [view]: an [AdaptyUIView] within which the event occurred.
-  /// - [product]: an [AdaptyPaywallProduct] of the purchase.
-  ///
-  /// **Returns**
-  /// - an [AdaptyAndroidSubscriptionUpdateParameters] object, used when
-  /// you need a subscription to be replaced with another one, otherwise `null`, [read more](https://docs.adapty.io/docs/android-making-purchases#change-subscription).
-  AdaptyAndroidSubscriptionUpdateParameters? paywallViewAwaitingSubscriptionUpdateParams(AdaptyUIView view, AdaptyPaywallProduct product) {
-    return null;
-  }
 }
