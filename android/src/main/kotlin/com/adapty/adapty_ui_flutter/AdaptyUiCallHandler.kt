@@ -3,6 +3,7 @@ package com.adapty.adapty_ui_flutter
 import android.app.Activity
 import com.adapty.errors.AdaptyError
 import com.adapty.internal.crossplatform.ui.AdaptyUiBridgeError
+import com.adapty.internal.crossplatform.ui.AdaptyUiDialogConfig
 import com.adapty.internal.crossplatform.ui.CrossplatformUiHelper
 import com.adapty.models.AdaptyPaywall
 import io.flutter.plugin.common.MethodCall
@@ -23,6 +24,7 @@ internal class AdaptyUiCallHandler(
             CREATE_VIEW -> handleCreateView(call, result)
             PRESENT_VIEW -> handlePresentView(call, result)
             DISMISS_VIEW -> handleDismissView(call, result)
+            SHOW_DIALOG -> handleShowDialog(call, result)
             else -> result.notImplemented()
         }
     }
@@ -84,6 +86,25 @@ internal class AdaptyUiCallHandler(
         helper.handleDismissView(
             id,
             { result.success(null) },
+            { error -> bridgeError(result, error) },
+        )
+    }
+
+    private fun handleShowDialog(call: MethodCall, result: MethodChannel.Result) {
+        val id = getArgument<String>(call, ID) ?: kotlin.run {
+            callParameterError(call, result, ID)
+            return
+        }
+
+        val configuration = parseJsonArgument<AdaptyUiDialogConfig>(call, CONFIGURATION) ?: kotlin.run {
+            callParameterError(call, result, CONFIGURATION)
+            return
+        }
+
+        helper.handleShowDialog(
+            id,
+            configuration,
+            { action -> result.success(action)},
             { error -> bridgeError(result, error) },
         )
     }
@@ -156,6 +177,7 @@ internal class AdaptyUiCallHandler(
         const val CREATE_VIEW = "create_view"
         const val PRESENT_VIEW = "present_view"
         const val DISMISS_VIEW = "dismiss_view"
+        const val SHOW_DIALOG = "show_dialog"
 
         const val ID = "id"
         const val PAYWALL = "paywall"
@@ -163,6 +185,7 @@ internal class AdaptyUiCallHandler(
         const val PRELOAD_PRODUCTS = "preload_products"
         const val PERSONALIZED_OFFERS = "personalized_offers"
         const val CUSTOM_TAGS = "custom_tags"
+        const val CONFIGURATION = "configuration"
 
         const val ADAPTY_ERROR_CODE = "adapty_flutter_android"
         const val ADAPTY_ERROR_MESSAGE_KEY = "message"
