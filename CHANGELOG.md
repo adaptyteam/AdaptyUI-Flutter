@@ -1,5 +1,11 @@
 ## 2.1.0
-- TODO:
+⚠️ Update Adapty Flutter SDK to 2.9.3
+
+- added support for [custom fonts](https://docs.adapty.io/docs/using-custom-fonts-in-paywall-builder)
+- added support for [custom tags](https://docs.adapty.io/docs/custom-tags-in-paywall-builder)
+- add support for [close button transition](https://docs.adapty.io/docs/paywall-layout-and-products#close-button-its-style-placement-and-fade-in-animation)
+- added `paywallViewDidStartRestore` method to `AdaptyUIObserver`
+- added `showDialog` method which allows to present native dialog above the paywall screen
 
 ## 2.0.6
 
