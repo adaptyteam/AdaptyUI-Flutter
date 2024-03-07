@@ -9,12 +9,6 @@ import UIKit
 
 struct AdaptyUIDialogConfiguration: Codable {
     struct Action: Codable {
-        enum Style: String, Codable {
-            case standard
-            case cancel
-            case destructive
-        }
-
         let title: String?
     }
 
@@ -28,16 +22,6 @@ struct AdaptyUIDialogConfiguration: Codable {
         case content
         case defaultAction = "default_action"
         case secondaryAction = "secondary_action"
-    }
-}
-
-extension AdaptyUIDialogConfiguration.Action.Style {
-    var uiAlertActionStyle: UIAlertAction.Style {
-        switch self {
-        case .standard: return .default
-        case .cancel: return .cancel
-        case .destructive: return .destructive
-        }
     }
 }
 
