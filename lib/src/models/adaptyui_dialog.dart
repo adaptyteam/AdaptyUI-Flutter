@@ -1,4 +1,3 @@
-import 'package:adapty_flutter/src/models/private/json_builder.dart';
 import 'package:meta/meta.dart' show immutable;
 
 part 'private/adaptyui_dialog_json_builder.dart';

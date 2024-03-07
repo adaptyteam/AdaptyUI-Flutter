@@ -15,7 +15,6 @@ import 'package:adapty_flutter/src/models/adapty_paywall.dart';
 import 'package:adapty_flutter/src/models/adapty_paywall_product.dart';
 import 'package:adapty_flutter/src/models/adapty_profile.dart';
 import 'package:adapty_flutter/src/models/adapty_error.dart';
-import 'package:adapty_flutter/src/models/adapty_sdk_native.dart';
 
 typedef AdaptyUIProductsTitlesResolver = String? Function(String productId);
 
