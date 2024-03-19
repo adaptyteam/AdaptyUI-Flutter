@@ -5,17 +5,17 @@ packages:
     dependency: "direct main"
     description:
       name: adapty_flutter
-      sha256: "8cdd7a85b97969385a7d2c452c68782273ce50f2cc18a7351bb27a0977423aff"
+      sha256: "1926fc4bfa454dc593bd860954dc4f316c885dff027c1553d6c3f30dedc4957a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.3"
+    version: "2.10.0"
   adapty_ui_flutter:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "2.1.0"
+    version: "2.1.1"
   async:
     dependency: transitive
     description:

@@ -1,13 +1,13 @@
 PODS:
-  - Adapty (2.9.6)
-  - adapty_flutter (2.9.2):
-    - Adapty (= 2.9.6)
+  - Adapty (2.10.1)
+  - adapty_flutter (2.10.0):
+    - Adapty (= 2.10.1)
     - Flutter
-  - adapty_ui_flutter (2.1.0):
-    - AdaptyUI (= 2.1.2)
+  - adapty_ui_flutter (2.1.1):
+    - AdaptyUI (= 2.1.3)
     - Flutter
-  - AdaptyUI (2.1.2):
-    - Adapty (= 2.9.6)
+  - AdaptyUI (2.1.3):
+    - Adapty (= 2.10.1)
   - Flutter (1.0.0)
   - shared_preferences_foundation (0.0.1):
     - Flutter
@@ -35,13 +35,13 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  Adapty: 18325c1f4d69ead08042e1c03218d2cc3f9b9693
-  adapty_flutter: bf7c6602269c513090c42cf764ffeb68afd49c5a
-  adapty_ui_flutter: d5f38a74a59f3010236643be998d7eba12b18ce7
-  AdaptyUI: dcc35eb0ee4a9daf7a0eb84804449065758e82b5
+  Adapty: 8458d44e75607e38da8845ba40893d53b51ae409
+  adapty_flutter: d1336eec102bb3e11de83715e661a934df76fd67
+  adapty_ui_flutter: 0c5f55020fb6bad6a447b41648f2ae784df27dc9
+  AdaptyUI: a7c6fab43713f057793ea938f2ada951f4805b7f
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
 
 PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

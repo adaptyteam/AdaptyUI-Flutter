@@ -1,3 +1,6 @@
+## 2.1.1
+- support for Adapty Flutter SDK 2.10.0
+  
 ## 2.1.0
 ⚠️ Update Adapty Flutter SDK to 2.9.3
 
