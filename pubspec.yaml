@@ -1,6 +1,6 @@
 name: adapty_ui_flutter
 description: Extension to the Adapty SDK that allows you to easily add purchase screens to your application.
-version: 2.1.1
+version: 2.1.2
 homepage: https://adapty.io/
 repository: https://github.com/adaptyteam/AdaptyUI-Flutter
 issue_tracker: https://github.com/adaptyteam/AdaptyUI-Flutter/issues

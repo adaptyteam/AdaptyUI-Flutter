@@ -1,3 +1,6 @@
+## 2.1.2
+- support for AdaptyUI iOS 2.1.3 and higher
+  
 ## 2.1.1
 - support for Adapty Flutter SDK 2.10.0
   

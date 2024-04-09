@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'adapty_ui_flutter'
-  s.version          = '2.1.1'
+  s.version          = '2.1.2'
   s.summary          = 'AdaptyUI flutter plugin.'
   s.description      = <<-DESC
 A new Flutter plugin project.
@@ -11,7 +11,7 @@ A new Flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.ios.dependency 'AdaptyUI', '2.1.3'
+  s.ios.dependency 'AdaptyUI', '~> 2.1.3'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.
