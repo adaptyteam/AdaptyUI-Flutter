@@ -28,7 +28,7 @@ class AdaptyUI {
 
   AdaptyUI._internal();
 
-  static const String sdkVersion = '2.1.2';
+  static const String sdkVersion = '2.1.3';
 
   static const String _channelName = 'flutter.adapty.com/adapty_ui';
   static const MethodChannel _channel = MethodChannel(_channelName);

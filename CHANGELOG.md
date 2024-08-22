@@ -1,3 +1,7 @@
+## 2.1.3
+- Support for Flutter 3.22+
+- support for Adapty Flutter SDK 2.10.2
+
 ## 2.1.2
 - support for AdaptyUI iOS 2.1.3 and higher
   
